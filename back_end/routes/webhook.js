@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder_not_configured");
 const Organization = require("../models/Organization");
 const User = require("../models/User");
 const StripeGrant = require("../models/StripeGrant");

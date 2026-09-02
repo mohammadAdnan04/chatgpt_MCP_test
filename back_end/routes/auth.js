@@ -29,6 +29,9 @@ router.get("/verify-email", authController.verifyEmail);
 
 // ----- GOOGLE -----
 router.get("/google", (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    return res.status(503).json({ msg: "Google login is not configured" });
+  }
   // keep your simple state (URL-encoded returnUrl)
   const state = JSON.stringify({
     returnUrl: req.query.returnUrl ? decodeURIComponent(req.query.returnUrl) : undefined,
@@ -63,6 +66,9 @@ router.get("/google/callback", (req, res, next) => {
 
 // ----- MICROSOFT -----
 router.get("/microsoft", (req, res, next) => {
+  if (!process.env.MS_CLIENT_ID || !process.env.MS_CLIENT_SECRET) {
+    return res.status(503).json({ msg: "Microsoft login is not configured" });
+  }
   const state = JSON.stringify({
     returnUrl: req.query.returnUrl ? decodeURIComponent(req.query.returnUrl) : undefined,
     from: req.query.from,

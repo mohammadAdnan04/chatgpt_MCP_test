@@ -1,0 +1,1898 @@
+[
+  {
+    "Accepted Industries values": "Abrasives and Nonmetallic Minerals Manufacturing",
+    "Accepted Company Size values": "1-10",
+    "Accepted Years of Experience values": "Less than 1 year",
+    "Description": "Less than 1 year",
+    "Accepted Years in Current Company": "Less than 1 year",
+    "Accepted Seniorities": "Owner / Founder",
+    "Accepted Job Functions": "Operations",
+    "Accepted Languages": "english",
+    "Accepted Revenue values": "0-1000000",
+    "Accepted Founded Year values": "2020-2025",
+    "Accepted Countries": "Afghanistan"
+  },
+  {
+    "Accepted Industries values": "Accessible Architecture and Design",
+    "Accepted Company Size values": "11-50",
+    "Accepted Years of Experience values": "1 to 2 years",
+    "Description": "1 to 2 years",
+    "Accepted Years in Current Company": "1 to 2 years",
+    "Accepted Seniorities": "CXO",
+    "Accepted Job Functions": "Business Development",
+    "Accepted Languages": "spanish",
+    "Accepted Revenue values": "1000000-10000000",
+    "Accepted Founded Year values": "2010-2020",
+    "Accepted Countries": "Albania"
+  },
+  {
+    "Accepted Industries values": "Accessible Hardware Manufacturing",
+    "Accepted Company Size values": "51-200",
+    "Accepted Years of Experience values": "3 to 5 years",
+    "Description": "3 to 5 years",
+    "Accepted Years in Current Company": "3 to 5 years",
+    "Accepted Seniorities": "Partner",
+    "Accepted Job Functions": "Sales",
+    "Accepted Languages": "french",
+    "Accepted Revenue values": "10000000-50000000",
+    "Accepted Founded Year values": "2000-2010",
+    "Accepted Countries": "Algeria"
+  },
+  {
+    "Accepted Industries values": "Accommodation and Food Services",
+    "Accepted Company Size values": "201-500",
+    "Accepted Years of Experience values": "6 to 10 years",
+    "Description": "6 to 10 years",
+    "Accepted Years in Current Company": "6 to 10 years",
+    "Accepted Seniorities": "VP",
+    "Accepted Job Functions": "Education",
+    "Accepted Languages": "german",
+    "Accepted Revenue values": "50000000-100000000",
+    "Accepted Founded Year values": "1990-2000",
+    "Accepted Countries": "American Samoa"
+  },
+  {
+    "Accepted Industries values": "Accounting",
+    "Accepted Company Size values": "501-1000",
+    "Accepted Years of Experience values": "More than 10 years",
+    "Description": "More than 10 years",
+    "Accepted Years in Current Company": "More than 10 years",
+    "Accepted Seniorities": "Head",
+    "Accepted Job Functions": "Engineering",
+    "Accepted Languages": "italian",
+    "Accepted Revenue values": "100000000-500000000",
+    "Accepted Founded Year values": "0-1990",
+    "Accepted Countries": "Andorra"
+  },
+  {
+    "Accepted Industries values": "Administration of Justice",
+    "Accepted Company Size values": "1001-5000",
+    "Accepted Seniorities": "Director",
+    "Accepted Job Functions": "Healthcare Services",
+    "Accepted Languages": "portuguese",
+    "Accepted Revenue values": "500000000-1000000000",
+    "Accepted Countries": "Angola"
+  },
+  {
+    "Accepted Industries values": "Administrative and Support Services",
+    "Accepted Company Size values": "5001-10000",
+    "Accepted Seniorities": "Manager",
+    "Accepted Job Functions": "Information Technology",
+    "Accepted Languages": "russian",
+    "Accepted Revenue values": "1000000000+",
+    "Accepted Countries": "Anguilla"
+  },
+  {
+    "Accepted Industries values": "Advertising Services",
+    "Accepted Company Size values": "10001+",
+    "Accepted Seniorities": "Senior",
+    "Accepted Job Functions": "Administrative",
+    "Accepted Languages": "chinese",
+    "Accepted Countries": "Antarctica"
+  },
+  {
+    "Accepted Industries values": "Agricultural Chemical Manufacturing",
+    "Accepted Seniorities": "Entry",
+    "Accepted Job Functions": "Arts and Design",
+    "Accepted Languages": "japanese",
+    "Accepted Countries": "Antigua and Barbuda"
+  },
+  {
+    "Accepted Industries values": "Agriculture, Construction, Mining Machinery Manufacturing",
+    "Accepted Seniorities": "Intern",
+    "Accepted Job Functions": "Customer Success and Support",
+    "Accepted Languages": "korean",
+    "Accepted Countries": "Argentina"
+  },
+  {
+    "Accepted Industries values": "Air, Water, and Waste Program Management",
+    "Accepted Job Functions": "Finance",
+    "Accepted Languages": "arabic",
+    "Accepted Countries": "Armenia"
+  },
+  {
+    "Accepted Industries values": "Airlines and Aviation",
+    "Accepted Job Functions": "Community and Social Services",
+    "Accepted Languages": "hindi",
+    "Accepted Countries": "Aruba"
+  },
+  {
+    "Accepted Industries values": "Airlines/Aviation",
+    "Accepted Job Functions": "Media and Communication",
+    "Accepted Languages": "bengali",
+    "Accepted Countries": "Australia"
+  },
+  {
+    "Accepted Industries values": "Alternative Dispute Resolution",
+    "Accepted Job Functions": "Accounting",
+    "Accepted Languages": "punjabi",
+    "Accepted Countries": "Austria"
+  },
+  {
+    "Accepted Industries values": "Alternative Fuel Vehicle Manufacturing",
+    "Accepted Job Functions": "Marketing",
+    "Accepted Languages": "javanese",
+    "Accepted Countries": "Azerbaijan"
+  },
+  {
+    "Accepted Industries values": "Alternative Medicine",
+    "Accepted Job Functions": "Human Resources",
+    "Accepted Languages": "telugu",
+    "Accepted Countries": "Bahamas"
+  },
+  {
+    "Accepted Industries values": "Ambulance Services",
+    "Accepted Job Functions": "Research",
+    "Accepted Languages": "vietnamese",
+    "Accepted Countries": "Bahrain"
+  },
+  {
+    "Accepted Industries values": "Amusement Parks and Arcades",
+    "Accepted Job Functions": "Program and Project Management",
+    "Accepted Languages": "marathi",
+    "Accepted Countries": "Bangladesh"
+  },
+  {
+    "Accepted Industries values": "Animal Feed Manufacturing",
+    "Accepted Job Functions": "Legal",
+    "Accepted Languages": "turkish",
+    "Accepted Countries": "Barbados"
+  },
+  {
+    "Accepted Industries values": "Animation",
+    "Accepted Job Functions": "Military and Protective Services",
+    "Accepted Languages": "dutch",
+    "Accepted Countries": "Belarus"
+  },
+  {
+    "Accepted Industries values": "Animation and Post-production",
+    "Accepted Job Functions": "Consulting",
+    "Accepted Languages": "polish",
+    "Accepted Countries": "Belgium"
+  },
+  {
+    "Accepted Industries values": "Apparel & Fashion",
+    "Accepted Job Functions": "Entrepreneurship",
+    "Accepted Languages": "swedish",
+    "Accepted Countries": "Belize"
+  },
+  {
+    "Accepted Industries values": "Apparel Manufacturing",
+    "Accepted Job Functions": "Real Estate",
+    "Accepted Languages": "finnish",
+    "Accepted Countries": "Benin"
+  },
+  {
+    "Accepted Industries values": "Appliances, Electrical, and Electronics Manufacturing",
+    "Accepted Job Functions": "Quality Assurance",
+    "Accepted Languages": "danish",
+    "Accepted Countries": "Bermuda"
+  },
+  {
+    "Accepted Industries values": "Architectural and Structural Metal Manufacturing",
+    "Accepted Job Functions": "Purchasing",
+    "Accepted Languages": "norwegian",
+    "Accepted Countries": "Bhutan"
+  },
+  {
+    "Accepted Industries values": "Architecture & Planning",
+    "Accepted Job Functions": "Product Management",
+    "Accepted Languages": "greek",
+    "Accepted Countries": "Bolivia"
+  },
+  {
+    "Accepted Industries values": "Architecture and Planning",
+    "Accepted Job Functions": "Leadership",
+    "Accepted Languages": "hebrew",
+    "Accepted Countries": "Bosnia and Herzegovina"
+  },
+  {
+    "Accepted Industries values": "Armed Forces",
+    "Accepted Languages": "indonesian",
+    "Accepted Countries": "Botswana"
+  },
+  {
+    "Accepted Industries values": "Artificial Rubber and Synthetic Fiber Manufacturing",
+    "Accepted Languages": "malay",
+    "Accepted Countries": "Bouvet Island"
+  },
+  {
+    "Accepted Industries values": "Artists and Writers",
+    "Accepted Languages": "thai",
+    "Accepted Countries": "Brazil"
+  },
+  {
+    "Accepted Industries values": "Arts & Crafts",
+    "Accepted Countries": "British Indian Ocean Territory"
+  },
+  {
+    "Accepted Industries values": "Audio and Video Equipment Manufacturing",
+    "Accepted Countries": "Brunei Darussalam"
+  },
+  {
+    "Accepted Industries values": "Automation Machinery Manufacturing",
+    "Accepted Countries": "Bulgaria"
+  },
+  {
+    "Accepted Industries values": "Automotive",
+    "Accepted Countries": "Burkina Faso"
+  },
+  {
+    "Accepted Industries values": "Aviation & Aerospace",
+    "Accepted Countries": "Burundi"
+  },
+  {
+    "Accepted Industries values": "Aviation and Aerospace Component Manufacturing",
+    "Accepted Countries": "Cambodia"
+  },
+  {
+    "Accepted Industries values": "Baked Goods Manufacturing",
+    "Accepted Countries": "Cameroon"
+  },
+  {
+    "Accepted Industries values": "Banking",
+    "Accepted Countries": "Canada"
+  },
+  {
+    "Accepted Industries values": "Bed-and-Breakfasts, Hostels, Homestays",
+    "Accepted Countries": "Cayman Islands"
+  },
+  {
+    "Accepted Industries values": "Beverage Manufacturing",
+    "Accepted Countries": "Central African Republic"
+  },
+  {
+    "Accepted Industries values": "Biomass Electric Power Generation",
+    "Accepted Countries": "Chad"
+  },
+  {
+    "Accepted Industries values": "Biotechnology",
+    "Accepted Countries": "Chile"
+  },
+  {
+    "Accepted Industries values": "Biotechnology Research",
+    "Accepted Countries": "China"
+  },
+  {
+    "Accepted Industries values": "Blockchain Services",
+    "Accepted Countries": "Christmas Island"
+  },
+  {
+    "Accepted Industries values": "Blogs",
+    "Accepted Countries": "Cocos (Keeling) Islands"
+  },
+  {
+    "Accepted Industries values": "Boilers, Tanks, and Shipping Container Manufacturing",
+    "Accepted Countries": "Colombia"
+  },
+  {
+    "Accepted Industries values": "Book and Periodical Publishing",
+    "Accepted Countries": "Comoros"
+  },
+  {
+    "Accepted Industries values": "Book Publishing",
+    "Accepted Countries": "Congo"
+  },
+  {
+    "Accepted Industries values": "Broadcast Media",
+    "Accepted Countries": "Cook Islands"
+  },
+  {
+    "Accepted Industries values": "Broadcast Media Production and Distribution",
+    "Accepted Countries": "Costa Rica"
+  },
+  {
+    "Accepted Industries values": "Building Construction",
+    "Accepted Countries": "Cote D'Ivoire"
+  },
+  {
+    "Accepted Industries values": "Building Equipment Contractors",
+    "Accepted Countries": "Croatia"
+  },
+  {
+    "Accepted Industries values": "Building Finishing Contractors",
+    "Accepted Countries": "Cuba"
+  },
+  {
+    "Accepted Industries values": "Building Materials",
+    "Accepted Countries": "Cyprus"
+  },
+  {
+    "Accepted Industries values": "Building Structure and Exterior Contractors",
+    "Accepted Countries": "Czech Republic"
+  },
+  {
+    "Accepted Industries values": "Business Consulting and Services",
+    "Accepted Countries": "Denmark"
+  },
+  {
+    "Accepted Industries values": "Business Content",
+    "Accepted Countries": "Djibouti"
+  },
+  {
+    "Accepted Industries values": "Business Intelligence Platforms",
+    "Accepted Countries": "Dominica"
+  },
+  {
+    "Accepted Industries values": "Business Supplies & Equipment",
+    "Accepted Countries": "Dominican Republic"
+  },
+  {
+    "Accepted Industries values": "Cable and Satellite Programming",
+    "Accepted Countries": "Ecuador"
+  },
+  {
+    "Accepted Industries values": "Capital Markets",
+    "Accepted Countries": "Egypt"
+  },
+  {
+    "Accepted Industries values": "Caterers",
+    "Accepted Countries": "El Salvador"
+  },
+  {
+    "Accepted Industries values": "Chemical Manufacturing",
+    "Accepted Countries": "Equatorial Guinea"
+  },
+  {
+    "Accepted Industries values": "Chemical Raw Materials Manufacturing",
+    "Accepted Countries": "Eritrea"
+  },
+  {
+    "Accepted Industries values": "Chemicals",
+    "Accepted Countries": "Estonia"
+  },
+  {
+    "Accepted Industries values": "Child Day Care Services",
+    "Accepted Countries": "Ethiopia"
+  },
+  {
+    "Accepted Industries values": "Chiropractors",
+    "Accepted Countries": "Falkland Islands (Malvinas)"
+  },
+  {
+    "Accepted Industries values": "Circuses and Magic Shows",
+    "Accepted Countries": "Faroe Islands"
+  },
+  {
+    "Accepted Industries values": "Civic & Social Organization",
+    "Accepted Countries": "Fiji"
+  },
+  {
+    "Accepted Industries values": "Civic and Social Organizations",
+    "Accepted Countries": "Finland"
+  },
+  {
+    "Accepted Industries values": "Civil Engineering",
+    "Accepted Countries": "France"
+  },
+  {
+    "Accepted Industries values": "Claims Adjusting, Actuarial Services",
+    "Accepted Countries": "French Guiana"
+  },
+  {
+    "Accepted Industries values": "Clay and Refractory Products Manufacturing",
+    "Accepted Countries": "French Polynesia"
+  },
+  {
+    "Accepted Industries values": "Climate Data and Analytics",
+    "Accepted Countries": "French Southern Territories"
+  },
+  {
+    "Accepted Industries values": "Climate Technology Product Manufacturing",
+    "Accepted Countries": "Gabon"
+  },
+  {
+    "Accepted Industries values": "Coal Mining",
+    "Accepted Countries": "Gambia"
+  },
+  {
+    "Accepted Industries values": "Collection Agencies",
+    "Accepted Countries": "Georgia"
+  },
+  {
+    "Accepted Industries values": "Commercial and Industrial Equipment Rental",
+    "Accepted Countries": "Germany"
+  },
+  {
+    "Accepted Industries values": "Commercial and Industrial Machinery Maintenance",
+    "Accepted Countries": "Ghana"
+  },
+  {
+    "Accepted Industries values": "Commercial and Service Industry Machinery Manufacturing",
+    "Accepted Countries": "Gibraltar"
+  },
+  {
+    "Accepted Industries values": "Commercial Real Estate",
+    "Accepted Countries": "Greece"
+  },
+  {
+    "Accepted Industries values": "Communications Equipment Manufacturing",
+    "Accepted Countries": "Greenland"
+  },
+  {
+    "Accepted Industries values": "Community Development and Urban Planning",
+    "Accepted Countries": "Grenada"
+  },
+  {
+    "Accepted Industries values": "Community Services",
+    "Accepted Countries": "Guadeloupe"
+  },
+  {
+    "Accepted Industries values": "Computer & Network Security",
+    "Accepted Countries": "Guam"
+  },
+  {
+    "Accepted Industries values": "Computer and Network Security",
+    "Accepted Countries": "Guatemala"
+  },
+  {
+    "Accepted Industries values": "Computer Games",
+    "Accepted Countries": "Guinea"
+  },
+  {
+    "Accepted Industries values": "Computer Hardware",
+    "Accepted Countries": "Guinea-Bissau"
+  },
+  {
+    "Accepted Industries values": "Computer Hardware Manufacturing",
+    "Accepted Countries": "Guyana"
+  },
+  {
+    "Accepted Industries values": "Computer Networking",
+    "Accepted Countries": "Haiti"
+  },
+  {
+    "Accepted Industries values": "Computer Networking Products",
+    "Accepted Countries": "Heard Island and Mcdonald Islands"
+  },
+  {
+    "Accepted Industries values": "Computer Software",
+    "Accepted Countries": "Holy See (Vatican City State)"
+  },
+  {
+    "Accepted Industries values": "Computers and Electronics Manufacturing",
+    "Accepted Countries": "Honduras"
+  },
+  {
+    "Accepted Industries values": "Conservation Programs",
+    "Accepted Countries": "Hong Kong"
+  },
+  {
+    "Accepted Industries values": "Construction",
+    "Accepted Countries": "Hungary"
+  },
+  {
+    "Accepted Industries values": "Construction Hardware Manufacturing",
+    "Accepted Countries": "Iceland"
+  },
+  {
+    "Accepted Industries values": "Consumer Electronics",
+    "Accepted Countries": "India"
+  },
+  {
+    "Accepted Industries values": "Consumer Goods",
+    "Accepted Countries": "Indonesia"
+  },
+  {
+    "Accepted Industries values": "Consumer Goods Rental",
+    "Accepted Countries": "Iran, Islamic Republic of"
+  },
+  {
+    "Accepted Industries values": "Consumer Services",
+    "Accepted Countries": "Iraq"
+  },
+  {
+    "Accepted Industries values": "Correctional Institutions",
+    "Accepted Countries": "Ireland"
+  },
+  {
+    "Accepted Industries values": "Cosmetics",
+    "Accepted Countries": "Italy"
+  },
+  {
+    "Accepted Industries values": "Cosmetology and Barber Schools",
+    "Accepted Countries": "Jamaica"
+  },
+  {
+    "Accepted Industries values": "Courts of Law",
+    "Accepted Countries": "Japan"
+  },
+  {
+    "Accepted Industries values": "Credit Intermediation",
+    "Accepted Countries": "Jordan"
+  },
+  {
+    "Accepted Industries values": "Cutlery and Handtool Manufacturing",
+    "Accepted Countries": "Kazakhstan"
+  },
+  {
+    "Accepted Industries values": "Dairy",
+    "Accepted Countries": "Kenya"
+  },
+  {
+    "Accepted Industries values": "Dairy Product Manufacturing",
+    "Accepted Countries": "Kiribati"
+  },
+  {
+    "Accepted Industries values": "Dance Companies",
+    "Accepted Countries": "Korea, Democratic People's Republic of"
+  },
+  {
+    "Accepted Industries values": "Data Infrastructure and Analytics",
+    "Accepted Countries": "Korea, Republic of"
+  },
+  {
+    "Accepted Industries values": "Data Security Software Products",
+    "Accepted Countries": "Kuwait"
+  },
+  {
+    "Accepted Industries values": "Death Care Services",
+    "Accepted Countries": "Kyrgyzstan"
+  },
+  {
+    "Accepted Industries values": "Defense & Space",
+    "Accepted Countries": "Lao People's Democratic Republic"
+  },
+  {
+    "Accepted Industries values": "Defense and Space Manufacturing",
+    "Accepted Countries": "Latvia"
+  },
+  {
+    "Accepted Industries values": "Dentists",
+    "Accepted Countries": "Lebanon"
+  },
+  {
+    "Accepted Industries values": "Design",
+    "Accepted Countries": "Lesotho"
+  },
+  {
+    "Accepted Industries values": "Design Services",
+    "Accepted Countries": "Liberia"
+  },
+  {
+    "Accepted Industries values": "Desktop Computing Software Products",
+    "Accepted Countries": "Libyan Arab Jamahiriya"
+  },
+  {
+    "Accepted Industries values": "Digital Accessibility Services",
+    "Accepted Countries": "Liechtenstein"
+  },
+  {
+    "Accepted Industries values": "E-learning",
+    "Accepted Countries": "Luxembourg"
+  },
+  {
+    "Accepted Industries values": "E-Learning Providers",
+    "Accepted Countries": "Macao"
+  },
+  {
+    "Accepted Industries values": "Economic Programs",
+    "Accepted Countries": "Macedonia, The Former Yugoslav Republic of"
+  },
+  {
+    "Accepted Industries values": "Education",
+    "Accepted Countries": "Madagascar"
+  },
+  {
+    "Accepted Industries values": "Education Administration Programs",
+    "Accepted Countries": "Malawi"
+  },
+  {
+    "Accepted Industries values": "Education Management",
+    "Accepted Countries": "Malaysia"
+  },
+  {
+    "Accepted Industries values": "Electric Lighting Equipment Manufacturing",
+    "Accepted Countries": "Maldives"
+  },
+  {
+    "Accepted Industries values": "Electric Power Generation",
+    "Accepted Countries": "Mali"
+  },
+  {
+    "Accepted Industries values": "Electric Power Transmission, Control, and Distribution",
+    "Accepted Countries": "Malta"
+  },
+  {
+    "Accepted Industries values": "Electrical & Electronic Manufacturing",
+    "Accepted Countries": "Marshall Islands"
+  },
+  {
+    "Accepted Industries values": "Electrical Equipment Manufacturing",
+    "Accepted Countries": "Martinique"
+  },
+  {
+    "Accepted Industries values": "Electronic and Precision Equipment Maintenance",
+    "Accepted Countries": "Mauritania"
+  },
+  {
+    "Accepted Industries values": "Embedded Software Products",
+    "Accepted Countries": "Mauritius"
+  },
+  {
+    "Accepted Industries values": "Emergency and Relief Services",
+    "Accepted Countries": "Mayotte"
+  },
+  {
+    "Accepted Industries values": "Energy Technology",
+    "Accepted Countries": "Mexico"
+  },
+  {
+    "Accepted Industries values": "Engineering Services",
+    "Accepted Countries": "Micronesia, Federated States of"
+  },
+  {
+    "Accepted Industries values": "Engines and Power Transmission Equipment Manufacturing",
+    "Accepted Countries": "Moldova, Republic of"
+  },
+  {
+    "Accepted Countries": "Monaco",
+    "Accepted Industries values": "Entertainment"
+  },
+  {
+    "Accepted Countries": "Mongolia",
+    "Accepted Industries values": "Entertainment Providers"
+  },
+  {
+    "Accepted Countries": "Montenegro",
+    "Accepted Industries values": "Environmental Quality Programs"
+  },
+  {
+    "Accepted Countries": "Montserrat",
+    "Accepted Industries values": "Environmental Services"
+  },
+  {
+    "Accepted Countries": "Morocco",
+    "Accepted Industries values": "Equipment Rental Services"
+  },
+  {
+    "Accepted Countries": "Mozambique",
+    "Accepted Industries values": "Events Services"
+  },
+  {
+    "Accepted Countries": "Myanmar",
+    "Accepted Industries values": "Executive Office"
+  },
+  {
+    "Accepted Countries": "Nauru",
+    "Accepted Industries values": "Executive Search Services"
+  },
+  {
+    "Accepted Countries": "Nepal",
+    "Accepted Industries values": "Fabricated Metal Products"
+  },
+  {
+    "Accepted Countries": "Netherlands",
+    "Accepted Industries values": "Facilities Services"
+  },
+  {
+    "Accepted Countries": "Netherlands Antilles",
+    "Accepted Industries values": "Family Planning Centers"
+  },
+  {
+    "Accepted Countries": "New Caledonia",
+    "Accepted Industries values": "Farming"
+  },
+  {
+    "Accepted Countries": "New Zealand",
+    "Accepted Industries values": "Farming, Ranching, Forestry"
+  },
+  {
+    "Accepted Countries": "Nicaragua",
+    "Accepted Industries values": "Fashion Accessories Manufacturing"
+  },
+  {
+    "Accepted Countries": "Niger",
+    "Accepted Industries values": "Financial Services"
+  },
+  {
+    "Accepted Countries": "Nigeria",
+    "Accepted Industries values": "Fine Art"
+  },
+  {
+    "Accepted Countries": "Niue",
+    "Accepted Industries values": "Fine Arts Schools"
+  },
+  {
+    "Accepted Countries": "Norfolk Island",
+    "Accepted Industries values": "Fire Protection"
+  },
+  {
+    "Accepted Countries": "Norway",
+    "Accepted Industries values": "Fishery"
+  },
+  {
+    "Accepted Countries": "Oman",
+    "Accepted Industries values": "Flight Training"
+  },
+  {
+    "Accepted Countries": "Pakistan",
+    "Accepted Industries values": "Food & Beverages"
+  },
+  {
+    "Accepted Countries": "Palau",
+    "Accepted Industries values": "Food and Beverage Manufacturing"
+  },
+  {
+    "Accepted Countries": "Palestinian Territory, Occupied",
+    "Accepted Industries values": "Food and Beverage Retail"
+  },
+  {
+    "Accepted Countries": "Panama",
+    "Accepted Industries values": "Food and Beverage Services"
+  },
+  {
+    "Accepted Countries": "Papua New Guinea",
+    "Accepted Industries values": "Food Production"
+  },
+  {
+    "Accepted Countries": "Paraguay",
+    "Accepted Industries values": "Footwear and Leather Goods Repair"
+  },
+  {
+    "Accepted Countries": "Peru",
+    "Accepted Industries values": "Footwear Manufacturing"
+  },
+  {
+    "Accepted Countries": "Philippines",
+    "Accepted Industries values": "Forestry and Logging"
+  },
+  {
+    "Accepted Countries": "Pitcairn",
+    "Accepted Industries values": "Fossil Fuel Electric Power Generation"
+  },
+  {
+    "Accepted Countries": "Poland",
+    "Accepted Industries values": "Freight and Package Transportation"
+  },
+  {
+    "Accepted Countries": "Portugal",
+    "Accepted Industries values": "Fruit and Vegetable Preserves Manufacturing"
+  },
+  {
+    "Accepted Countries": "Puerto Rico",
+    "Accepted Industries values": "Fuel Cell Manufacturing"
+  },
+  {
+    "Accepted Countries": "Qatar",
+    "Accepted Industries values": "Fundraising"
+  },
+  {
+    "Accepted Countries": "Reunion",
+    "Accepted Industries values": "Funds and Trusts"
+  },
+  {
+    "Accepted Countries": "Romania",
+    "Accepted Industries values": "Funeral Services"
+  },
+  {
+    "Accepted Countries": "Russian Federation",
+    "Accepted Industries values": "Furniture"
+  },
+  {
+    "Accepted Countries": "Rwanda",
+    "Accepted Industries values": "Furniture and Home Furnishings Manufacturing"
+  },
+  {
+    "Accepted Countries": "Saint Helena",
+    "Accepted Industries values": "Geothermal Electric Power Generation"
+  },
+  {
+    "Accepted Countries": "Saint Kitts and Nevis",
+    "Accepted Industries values": "Glass Product Manufacturing"
+  },
+  {
+    "Accepted Countries": "Saint Lucia",
+    "Accepted Industries values": "Glass, Ceramics & Concrete"
+  },
+  {
+    "Accepted Countries": "Saint Pierre and Miquelon",
+    "Accepted Industries values": "Glass, Ceramics and Concrete Manufacturing"
+  },
+  {
+    "Accepted Countries": "Saint Vincent and The Grenadines",
+    "Accepted Industries values": "Golf Courses and Country Clubs"
+  },
+  {
+    "Accepted Countries": "Samoa",
+    "Accepted Industries values": "Government Administration"
+  },
+  {
+    "Accepted Countries": "San Marino",
+    "Accepted Industries values": "Government Relations"
+  },
+  {
+    "Accepted Countries": "Sao Tome and Principe",
+    "Accepted Industries values": "Government Relations Services"
+  },
+  {
+    "Accepted Countries": "Saudi Arabia",
+    "Accepted Industries values": "Graphic Design"
+  },
+  {
+    "Accepted Countries": "Senegal",
+    "Accepted Industries values": "Ground Passenger Transportation"
+  },
+  {
+    "Accepted Countries": "Serbia",
+    "Accepted Industries values": "Health and Human Services"
+  },
+  {
+    "Accepted Countries": "Seychelles",
+    "Accepted Industries values": "Health, Wellness & Fitness"
+  },
+  {
+    "Accepted Countries": "Sierra Leone",
+    "Accepted Industries values": "Higher Education"
+  },
+  {
+    "Accepted Countries": "Singapore",
+    "Accepted Industries values": "Highway, Street, and Bridge Construction"
+  },
+  {
+    "Accepted Countries": "Slovakia",
+    "Accepted Industries values": "Historical Sites"
+  },
+  {
+    "Accepted Countries": "Slovenia",
+    "Accepted Industries values": "Holding Companies"
+  },
+  {
+    "Accepted Countries": "Solomon Islands",
+    "Accepted Industries values": "Home Health Care Services"
+  },
+  {
+    "Accepted Countries": "Somalia",
+    "Accepted Industries values": "Horticulture"
+  },
+  {
+    "Accepted Countries": "South Africa",
+    "Accepted Industries values": "Hospital & Health Care"
+  },
+  {
+    "Accepted Countries": "South Georgia and The South Sandwich Islands",
+    "Accepted Industries values": "Hospitality"
+  },
+  {
+    "Accepted Countries": "Spain",
+    "Accepted Industries values": "Hospitals"
+  },
+  {
+    "Accepted Countries": "Sri Lanka",
+    "Accepted Industries values": "Hospitals and Health Care"
+  },
+  {
+    "Accepted Countries": "Sudan",
+    "Accepted Industries values": "Hotels and Motels"
+  },
+  {
+    "Accepted Countries": "Suriname",
+    "Accepted Industries values": "Household and Institutional Furniture Manufacturing"
+  },
+  {
+    "Accepted Countries": "Svalbard and Jan Mayen",
+    "Accepted Industries values": "Household Appliance Manufacturing"
+  },
+  {
+    "Accepted Countries": "Swaziland",
+    "Accepted Industries values": "Household Services"
+  },
+  {
+    "Accepted Countries": "Sweden",
+    "Accepted Industries values": "Housing and Community Development"
+  },
+  {
+    "Accepted Countries": "Switzerland",
+    "Accepted Industries values": "Housing Programs"
+  },
+  {
+    "Accepted Countries": "Syrian Arab Republic",
+    "Accepted Industries values": "Human Resources"
+  },
+  {
+    "Accepted Countries": "Taiwan, Province of China",
+    "Accepted Industries values": "Human Resources Services"
+  },
+  {
+    "Accepted Countries": "Tajikistan",
+    "Accepted Industries values": "HVAC and Refrigeration Equipment Manufacturing"
+  },
+  {
+    "Accepted Countries": "Tanzania, United Republic of",
+    "Accepted Industries values": "Hydroelectric Power Generation"
+  },
+  {
+    "Accepted Countries": "Thailand",
+    "Accepted Industries values": "Import & Export"
+  },
+  {
+    "Accepted Countries": "Timor-Leste",
+    "Accepted Industries values": "Individual & Family Services"
+  },
+  {
+    "Accepted Countries": "Togo",
+    "Accepted Industries values": "Individual and Family Services"
+  },
+  {
+    "Accepted Countries": "Tokelau",
+    "Accepted Industries values": "Industrial Automation"
+  },
+  {
+    "Accepted Countries": "Tonga",
+    "Accepted Industries values": "Industrial Machinery Manufacturing"
+  },
+  {
+    "Accepted Countries": "Trinidad and Tobago",
+    "Accepted Industries values": "Industry Associations"
+  },
+  {
+    "Accepted Countries": "Tunisia",
+    "Accepted Industries values": "Information Services"
+  },
+  {
+    "Accepted Countries": "Turkey",
+    "Accepted Industries values": "Information Technology & Services"
+  },
+  {
+    "Accepted Countries": "Turkmenistan",
+    "Accepted Industries values": "Insurance"
+  },
+  {
+    "Accepted Countries": "Turks and Caicos Islands",
+    "Accepted Industries values": "Insurance Agencies and Brokerages"
+  },
+  {
+    "Accepted Countries": "Tuvalu",
+    "Accepted Industries values": "Insurance and Employee Benefit Funds"
+  },
+  {
+    "Accepted Countries": "Uganda",
+    "Accepted Industries values": "Insurance Carriers"
+  },
+  {
+    "Accepted Countries": "Ukraine",
+    "Accepted Industries values": "Interior Design"
+  },
+  {
+    "Accepted Countries": "United Arab Emirates",
+    "Accepted Industries values": "International Affairs"
+  },
+  {
+    "Accepted Countries": "United Kingdom",
+    "Accepted Industries values": "International Trade & Development"
+  },
+  {
+    "Accepted Countries": "United States",
+    "Accepted Industries values": "International Trade and Development"
+  },
+  {
+    "Accepted Countries": "United States Minor Outlying Islands",
+    "Accepted Industries values": "Internet"
+  },
+  {
+    "Accepted Countries": "Uruguay",
+    "Accepted Industries values": "Internet Marketplace Platforms"
+  },
+  {
+    "Accepted Countries": "Uzbekistan",
+    "Accepted Industries values": "Internet News"
+  },
+  {
+    "Accepted Countries": "Vanuatu",
+    "Accepted Industries values": "Internet Publishing"
+  },
+  {
+    "Accepted Countries": "Venezuela",
+    "Accepted Industries values": "Interurban and Rural Bus Services"
+  },
+  {
+    "Accepted Countries": "Viet Nam",
+    "Accepted Industries values": "Investment Advice"
+  },
+  {
+    "Accepted Countries": "Virgin Islands, British",
+    "Accepted Industries values": "Investment Banking"
+  },
+  {
+    "Accepted Countries": "Virgin Islands, U.S.",
+    "Accepted Industries values": "Investment Management"
+  },
+  {
+    "Accepted Countries": "Wallis and Futuna",
+    "Accepted Industries values": "IT Services and IT Consulting"
+  },
+  {
+    "Accepted Countries": "Western Sahara",
+    "Accepted Industries values": "IT System Custom Software Development"
+  },
+  {
+    "Accepted Countries": "Yemen",
+    "Accepted Industries values": "IT System Data Services"
+  },
+  {
+    "Accepted Countries": "Zambia",
+    "Accepted Industries values": "IT System Design Services"
+  },
+  {
+    "Accepted Countries": "Zimbabwe",
+    "Accepted Industries values": "IT System Installation and Disposal"
+  },
+  {
+    "Accepted Industries values": "IT System Operations and Maintenance"
+  },
+  {
+    "Accepted Industries values": "IT System Testing and Evaluation"
+  },
+  {
+    "Accepted Industries values": "IT System Training and Support"
+  },
+  {
+    "Accepted Industries values": "Janitorial Services"
+  },
+  {
+    "Accepted Industries values": "Judiciary"
+  },
+  {
+    "Accepted Industries values": "Landscaping Services"
+  },
+  {
+    "Accepted Industries values": "Language Schools"
+  },
+  {
+    "Accepted Industries values": "Laundry and Drycleaning Services"
+  },
+  {
+    "Accepted Industries values": "Law Enforcement"
+  },
+  {
+    "Accepted Industries values": "Law Practice"
+  },
+  {
+    "Accepted Industries values": "Leasing Non-residential Real Estate"
+  },
+  {
+    "Accepted Industries values": "Leasing Residential Real Estate"
+  },
+  {
+    "Accepted Industries values": "Leather Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Legal Services"
+  },
+  {
+    "Accepted Industries values": "Legislative Office"
+  },
+  {
+    "Accepted Industries values": "Leisure, Travel & Tourism"
+  },
+  {
+    "Accepted Industries values": "Libraries"
+  },
+  {
+    "Accepted Industries values": "Lime and Gypsum Products Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Loan Brokers"
+  },
+  {
+    "Accepted Industries values": "Logistics & Supply Chain"
+  },
+  {
+    "Accepted Industries values": "Luxury Goods & Jewelry"
+  },
+  {
+    "Accepted Industries values": "Machinery"
+  },
+  {
+    "Accepted Industries values": "Machinery Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Magnetic and Optical Media Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Management Consulting"
+  },
+  {
+    "Accepted Industries values": "Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Maritime"
+  },
+  {
+    "Accepted Industries values": "Maritime Transportation"
+  },
+  {
+    "Accepted Industries values": "Market Research"
+  },
+  {
+    "Accepted Industries values": "Marketing & Advertising"
+  },
+  {
+    "Accepted Industries values": "Marketing Services"
+  },
+  {
+    "Accepted Industries values": "Mattress and Blinds Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Measuring and Control Instrument Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Meat Products Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Mechanical Or Industrial Engineering"
+  },
+  {
+    "Accepted Industries values": "Media and Telecommunications"
+  },
+  {
+    "Accepted Industries values": "Media Production"
+  },
+  {
+    "Accepted Industries values": "Medical and Diagnostic Laboratories"
+  },
+  {
+    "Accepted Industries values": "Medical Device"
+  },
+  {
+    "Accepted Industries values": "Medical Equipment Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Medical Practice"
+  },
+  {
+    "Accepted Industries values": "Medical Practices"
+  },
+  {
+    "Accepted Industries values": "Mental Health Care"
+  },
+  {
+    "Accepted Industries values": "Metal Ore Mining"
+  },
+  {
+    "Accepted Industries values": "Metal Treatments"
+  },
+  {
+    "Accepted Industries values": "Metal Valve, Ball, and Roller Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Metalworking Machinery Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Military"
+  },
+  {
+    "Accepted Industries values": "Military and International Affairs"
+  },
+  {
+    "Accepted Industries values": "Mining"
+  },
+  {
+    "Accepted Industries values": "Mining & Metals"
+  },
+  {
+    "Accepted Industries values": "Mobile Computing Software Products"
+  },
+  {
+    "Accepted Industries values": "Mobile Food Services"
+  },
+  {
+    "Accepted Industries values": "Mobile Gaming Apps"
+  },
+  {
+    "Accepted Industries values": "Motion Pictures & Film"
+  },
+  {
+    "Accepted Industries values": "Motor Vehicle Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Motor Vehicle Parts Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Movies and Sound Recording"
+  },
+  {
+    "Accepted Industries values": "Movies, Videos, and Sound"
+  },
+  {
+    "Accepted Industries values": "Museums"
+  },
+  {
+    "Accepted Industries values": "Museums & Institutions"
+  },
+  {
+    "Accepted Industries values": "Museums, Historical Sites, and Zoos"
+  },
+  {
+    "Accepted Industries values": "Nanotechnology"
+  },
+  {
+    "Accepted Industries values": "Nanotechnology Research"
+  },
+  {
+    "Accepted Industries values": "Natural Gas Distribution"
+  },
+  {
+    "Accepted Industries values": "Natural Gas Extraction"
+  },
+  {
+    "Accepted Industries values": "Newspaper Publishing"
+  },
+  {
+    "Accepted Industries values": "Newspapers"
+  },
+  {
+    "Accepted Industries values": "Non-profit Organization Management"
+  },
+  {
+    "Accepted Industries values": "Non-profit Organizations"
+  },
+  {
+    "Accepted Industries values": "Nonmetallic Mineral Mining"
+  },
+  {
+    "Accepted Industries values": "Nonresidential Building Construction"
+  },
+  {
+    "Accepted Industries values": "Nuclear Electric Power Generation"
+  },
+  {
+    "Accepted Industries values": "Nursing Homes and Residential Care Facilities"
+  },
+  {
+    "Accepted Industries values": "Office Furniture and Fixtures Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Oil & Energy"
+  },
+  {
+    "Accepted Industries values": "Oil and Coal Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Oil and Gas"
+  },
+  {
+    "Accepted Industries values": "Oil Extraction"
+  },
+  {
+    "Accepted Industries values": "Oil, Gas, and Mining"
+  },
+  {
+    "Accepted Industries values": "Online and Mail Order Retail"
+  },
+  {
+    "Accepted Industries values": "Online Audio and Video Media"
+  },
+  {
+    "Accepted Industries values": "Online Media"
+  },
+  {
+    "Accepted Industries values": "Operations Consulting"
+  },
+  {
+    "Accepted Industries values": "Optometrists"
+  },
+  {
+    "Accepted Industries values": "Outpatient Care Centers"
+  },
+  {
+    "Accepted Industries values": "Outsourcing and Offshoring Consulting"
+  },
+  {
+    "Accepted Industries values": "Outsourcing/Offshoring"
+  },
+  {
+    "Accepted Industries values": "Package/Freight Delivery"
+  },
+  {
+    "Accepted Industries values": "Packaging & Containers"
+  },
+  {
+    "Accepted Industries values": "Packaging and Containers Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Paint, Coating, and Adhesive Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Paper & Forest Products"
+  },
+  {
+    "Accepted Industries values": "Paper and Forest Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Parts Distribution"
+  },
+  {
+    "Accepted Industries values": "Pension Funds"
+  },
+  {
+    "Accepted Industries values": "Performing Arts"
+  },
+  {
+    "Accepted Industries values": "Performing Arts and Spectator Sports"
+  },
+  {
+    "Accepted Industries values": "Periodical Publishing"
+  },
+  {
+    "Accepted Industries values": "Personal and Laundry Services"
+  },
+  {
+    "Accepted Industries values": "Personal Care Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Personal Care Services"
+  },
+  {
+    "Accepted Industries values": "Pet Services"
+  },
+  {
+    "Accepted Industries values": "Pharmaceutical Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Pharmaceuticals"
+  },
+  {
+    "Accepted Industries values": "Philanthropic Fundraising Services"
+  },
+  {
+    "Accepted Industries values": "Philanthropy"
+  },
+  {
+    "Accepted Industries values": "Photography"
+  },
+  {
+    "Accepted Industries values": "Physical, Occupational and Speech Therapists"
+  },
+  {
+    "Accepted Industries values": "Physicians"
+  },
+  {
+    "Accepted Industries values": "Pipeline Transportation"
+  },
+  {
+    "Accepted Industries values": "Plastics"
+  },
+  {
+    "Accepted Industries values": "Plastics and Rubber Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Plastics Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Political Organization"
+  },
+  {
+    "Accepted Industries values": "Postal Services"
+  },
+  {
+    "Accepted Industries values": "Primary and Secondary Education"
+  },
+  {
+    "Accepted Industries values": "Primary Metal Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Primary/Secondary Education"
+  },
+  {
+    "Accepted Industries values": "Printing"
+  },
+  {
+    "Accepted Industries values": "Printing Services"
+  },
+  {
+    "Accepted Industries values": "Professional Organizations"
+  },
+  {
+    "Accepted Industries values": "Professional Services"
+  },
+  {
+    "Accepted Industries values": "Professional Training & Coaching"
+  },
+  {
+    "Accepted Industries values": "Professional Training and Coaching"
+  },
+  {
+    "Accepted Industries values": "Program Development"
+  },
+  {
+    "Accepted Industries values": "Public Assistance Programs"
+  },
+  {
+    "Accepted Industries values": "Public Health"
+  },
+  {
+    "Accepted Industries values": "Public Policy"
+  },
+  {
+    "Accepted Industries values": "Public Policy Offices"
+  },
+  {
+    "Accepted Industries values": "Public Relations & Communications"
+  },
+  {
+    "Accepted Industries values": "Public Relations and Communications Services"
+  },
+  {
+    "Accepted Industries values": "Public Safety"
+  },
+  {
+    "Accepted Industries values": "Public Works"
+  },
+  {
+    "Accepted Industries values": "Publishing"
+  },
+  {
+    "Accepted Industries values": "Racetracks"
+  },
+  {
+    "Accepted Industries values": "Radio and Television Broadcasting"
+  },
+  {
+    "Accepted Industries values": "Rail Transportation"
+  },
+  {
+    "Accepted Industries values": "Railroad Equipment Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Railroad Manufacture"
+  },
+  {
+    "Accepted Industries values": "Ranching"
+  },
+  {
+    "Accepted Industries values": "Ranching and Fisheries"
+  },
+  {
+    "Accepted Industries values": "Real Estate"
+  },
+  {
+    "Accepted Industries values": "Real Estate Agents and Brokers"
+  },
+  {
+    "Accepted Industries values": "Real Estate and Equipment Rental Services"
+  },
+  {
+    "Accepted Industries values": "Recreational Facilities"
+  },
+  {
+    "Accepted Industries values": "Recreational Facilities & Services"
+  },
+  {
+    "Accepted Industries values": "Regenerative Design"
+  },
+  {
+    "Accepted Industries values": "Religious Institutions"
+  },
+  {
+    "Accepted Industries values": "Renewable Energy Equipment Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Renewable Energy Power Generation"
+  },
+  {
+    "Accepted Industries values": "Renewable Energy Semiconductor Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Renewables & Environment"
+  },
+  {
+    "Accepted Industries values": "Repair and Maintenance"
+  },
+  {
+    "Accepted Industries values": "Research"
+  },
+  {
+    "Accepted Industries values": "Research Services"
+  },
+  {
+    "Accepted Industries values": "Residential Building Construction"
+  },
+  {
+    "Accepted Industries values": "Restaurants"
+  },
+  {
+    "Accepted Industries values": "Retail"
+  },
+  {
+    "Accepted Industries values": "Retail Apparel and Fashion"
+  },
+  {
+    "Accepted Industries values": "Retail Appliances, Electrical, and Electronic Equipment"
+  },
+  {
+    "Accepted Industries values": "Retail Art Dealers"
+  },
+  {
+    "Accepted Industries values": "Retail Art Supplies"
+  },
+  {
+    "Accepted Industries values": "Retail Books and Printed News"
+  },
+  {
+    "Accepted Industries values": "Retail Building Materials and Garden Equipment"
+  },
+  {
+    "Accepted Industries values": "Retail Florists"
+  },
+  {
+    "Accepted Industries values": "Retail Furniture and Home Furnishings"
+  },
+  {
+    "Accepted Industries values": "Retail Gasoline"
+  },
+  {
+    "Accepted Industries values": "Retail Groceries"
+  },
+  {
+    "Accepted Industries values": "Retail Health and Personal Care Products"
+  },
+  {
+    "Accepted Industries values": "Retail Luxury Goods and Jewelry"
+  },
+  {
+    "Accepted Industries values": "Retail Motor Vehicles"
+  },
+  {
+    "Accepted Industries values": "Retail Office Equipment"
+  },
+  {
+    "Accepted Industries values": "Retail Office Supplies and Gifts"
+  },
+  {
+    "Accepted Industries values": "Retail Pharmacies"
+  },
+  {
+    "Accepted Industries values": "Retail Recyclable Materials & Used Merchandise"
+  },
+  {
+    "Accepted Industries values": "Reupholstery and Furniture Repair"
+  },
+  {
+    "Accepted Industries values": "Robot Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Robotics Engineering"
+  },
+  {
+    "Accepted Industries values": "Rubber Products Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Satellite Telecommunications"
+  },
+  {
+    "Accepted Industries values": "Savings Institutions"
+  },
+  {
+    "Accepted Industries values": "School and Employee Bus Services"
+  },
+  {
+    "Accepted Industries values": "Seafood Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Secretarial Schools"
+  },
+  {
+    "Accepted Industries values": "Securities and Commodity Exchanges"
+  },
+  {
+    "Accepted Industries values": "Security & Investigations"
+  },
+  {
+    "Accepted Industries values": "Security and Investigations"
+  },
+  {
+    "Accepted Industries values": "Security Guards and Patrol Services"
+  },
+  {
+    "Accepted Industries values": "Security Systems Services"
+  },
+  {
+    "Accepted Industries values": "Semiconductors"
+  },
+  {
+    "Accepted Industries values": "Services for Renewable Energy"
+  },
+  {
+    "Accepted Industries values": "Services for the Elderly and Disabled"
+  },
+  {
+    "Accepted Industries values": "Shipbuilding"
+  },
+  {
+    "Accepted Industries values": "Shuttles and Special Needs Transportation Services"
+  },
+  {
+    "Accepted Industries values": "Sightseeing Transportation"
+  },
+  {
+    "Accepted Industries values": "Skiing Facilities"
+  },
+  {
+    "Accepted Industries values": "Smart Meter Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Soap and Cleaning Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Social Networking Platforms"
+  },
+  {
+    "Accepted Industries values": "Software Development"
+  },
+  {
+    "Accepted Industries values": "Solar Electric Power Generation"
+  },
+  {
+    "Accepted Industries values": "Sound Recording"
+  },
+  {
+    "Accepted Industries values": "Space Research and Technology"
+  },
+  {
+    "Accepted Industries values": "Specialty Trade Contractors"
+  },
+  {
+    "Accepted Industries values": "Spectator Sports"
+  },
+  {
+    "Accepted Industries values": "Sporting Goods"
+  },
+  {
+    "Accepted Industries values": "Sporting Goods Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Sports"
+  },
+  {
+    "Accepted Industries values": "Sports and Recreation Instruction"
+  },
+  {
+    "Accepted Industries values": "Sports Teams and Clubs"
+  },
+  {
+    "Accepted Industries values": "Spring and Wire Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Staffing & Recruiting"
+  },
+  {
+    "Accepted Industries values": "Staffing and Recruiting"
+  },
+  {
+    "Accepted Industries values": "Steam and Air-Conditioning Supply"
+  },
+  {
+    "Accepted Industries values": "Strategic Management Services"
+  },
+  {
+    "Accepted Industries values": "Subdivision of Land"
+  },
+  {
+    "Accepted Industries values": "Sugar and Confectionery Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Supermarkets"
+  },
+  {
+    "Accepted Industries values": "Surveying and Mapping Services"
+  },
+  {
+    "Accepted Industries values": "Taxi and Limousine Services"
+  },
+  {
+    "Accepted Industries values": "Technical and Vocational Training"
+  },
+  {
+    "Accepted Industries values": "Technology, Information and Internet"
+  },
+  {
+    "Accepted Industries values": "Technology, Information and Media"
+  },
+  {
+    "Accepted Industries values": "Telecommunications"
+  },
+  {
+    "Accepted Industries values": "Telecommunications Carriers"
+  },
+  {
+    "Accepted Industries values": "Telephone Call Centers"
+  },
+  {
+    "Accepted Industries values": "Temporary Help Services"
+  },
+  {
+    "Accepted Industries values": "Textile Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Textiles"
+  },
+  {
+    "Accepted Industries values": "Theater Companies"
+  },
+  {
+    "Accepted Industries values": "Think Tanks"
+  },
+  {
+    "Accepted Industries values": "Translation & Localization"
+  },
+  {
+    "Accepted Industries values": "Translation and Localization"
+  },
+  {
+    "Accepted Industries values": "Transportation Equipment Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Transportation Programs"
+  },
+  {
+    "Accepted Industries values": "Transportation, Logistics, Supply Chain and Storage"
+  },
+  {
+    "Accepted Industries values": "Transportation/Trucking/Railroad"
+  },
+  {
+    "Accepted Industries values": "Travel Arrangements"
+  },
+  {
+    "Accepted Industries values": "Truck Transportation"
+  },
+  {
+    "Accepted Industries values": "Trusts and Estates"
+  },
+  {
+    "Accepted Industries values": "Turned Products and Fastener Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Urban Transit Services"
+  },
+  {
+    "Accepted Industries values": "Utilities"
+  },
+  {
+    "Accepted Industries values": "Utility System Construction"
+  },
+  {
+    "Accepted Industries values": "Vehicle Repair and Maintenance"
+  },
+  {
+    "Accepted Industries values": "Venture Capital & Private Equity"
+  },
+  {
+    "Accepted Industries values": "Venture Capital and Private Equity Principals"
+  },
+  {
+    "Accepted Industries values": "Veterinary"
+  },
+  {
+    "Accepted Industries values": "Veterinary Services"
+  },
+  {
+    "Accepted Industries values": "Vocational Rehabilitation Services"
+  },
+  {
+    "Accepted Industries values": "Warehousing"
+  },
+  {
+    "Accepted Industries values": "Warehousing and Storage"
+  },
+  {
+    "Accepted Industries values": "Waste Collection"
+  },
+  {
+    "Accepted Industries values": "Waste Treatment and Disposal"
+  },
+  {
+    "Accepted Industries values": "Water Supply and Irrigation Systems"
+  },
+  {
+    "Accepted Industries values": "Water, Waste, Steam, and Air Conditioning Services"
+  },
+  {
+    "Accepted Industries values": "Wellness and Fitness Services"
+  },
+  {
+    "Accepted Industries values": "Wholesale"
+  },
+  {
+    "Accepted Industries values": "Wholesale Apparel and Sewing Supplies"
+  },
+  {
+    "Accepted Industries values": "Wholesale Appliances, Electrical, and Electronics"
+  },
+  {
+    "Accepted Industries values": "Wholesale Building Materials"
+  },
+  {
+    "Accepted Industries values": "Wholesale Chemical and Allied Products"
+  },
+  {
+    "Accepted Industries values": "Wholesale Computer Equipment"
+  },
+  {
+    "Accepted Industries values": "Wholesale Food and Beverage"
+  },
+  {
+    "Accepted Industries values": "Wholesale Footwear"
+  },
+  {
+    "Accepted Industries values": "Wholesale Furniture and Home Furnishings"
+  },
+  {
+    "Accepted Industries values": "Wholesale Hardware, Plumbing, Heating Equipment"
+  },
+  {
+    "Accepted Industries values": "Wholesale Import and Export"
+  },
+  {
+    "Accepted Industries values": "Wholesale Luxury Goods and Jewelry"
+  },
+  {
+    "Accepted Industries values": "Wholesale Machinery"
+  },
+  {
+    "Accepted Industries values": "Wholesale Metals and Minerals"
+  },
+  {
+    "Accepted Industries values": "Wholesale Motor Vehicles and Parts"
+  },
+  {
+    "Accepted Industries values": "Wholesale Paper Products"
+  },
+  {
+    "Accepted Industries values": "Wholesale Petroleum and Petroleum Products"
+  },
+  {
+    "Accepted Industries values": "Wholesale Photography Equipment and Supplies"
+  },
+  {
+    "Accepted Industries values": "Wholesale Raw Farm Products"
+  },
+  {
+    "Accepted Industries values": "Wholesale Recyclable Materials"
+  },
+  {
+    "Accepted Industries values": "Wind Electric Power Generation"
+  },
+  {
+    "Accepted Industries values": "Wireless"
+  },
+  {
+    "Accepted Industries values": "Wireless Services"
+  },
+  {
+    "Accepted Industries values": "Women's Handbag Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Wood Product Manufacturing"
+  },
+  {
+    "Accepted Industries values": "Writing & Editing"
+  },
+  {
+    "Accepted Industries values": "Writing and Editing"
+  },
+  {
+    "Accepted Industries values": "Zoos and Botanical Gardens"
+  }
+]

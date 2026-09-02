@@ -1,0 +1,36 @@
+# Ignore everything in the root
+/*
+
+# Whitelist the required folders
+!/front_end/
+!/middleware_service/
+!/back_end/
+!/chatgpt-mcp/
+!/Mawsool-MCP/
+!/ai_search/
+!/custom-api-docs/
+!/.cursor/
+!/.cursor/rules/
+!/.cursor/rules/*.mdc
+!/.gitignore
+!/README.md
+
+# Global ignores
+node_modules/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.DS_Store
+*.log
+.next/
+dist/
+build/
+coverage/
+.trae/
+NEW-SEARCH-API-main/
+NEW-SEARCH-API-expanded-jt/
+website-testing-main/
+back_end/unverified_users_export.csv
+back_end/.well-known/

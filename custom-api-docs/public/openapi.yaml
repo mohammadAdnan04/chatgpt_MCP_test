@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: Mawsool Developer API
+  description: |-
+    Welcome to the Mawsool API Documentation!
+    
+    The Mawsool API provides powerful endpoints for B2B data enrichment and targeted global searching. Our API allows you to seamlessly integrate LinkedIn profile enrichment, company data retrieval, and advanced B2B lead searching directly into your own applications, CRMs, or internal tools.
+    
+    ### Core Capabilities
+    - **Unified Search API:** Query our massive database of global and MENA-specific B2B profiles and companies using advanced, granular filters (like Job Title, Location, Company Headcount, and Behavioral Keywords).
+    - **Enrichment API:** Instantly convert a LinkedIn URL into a comprehensive profile containing verified email addresses, phone numbers, and deep company intelligence.
+    
+    ### Getting Started
+    To use this API, you will need a valid `X-API-Key`. If you do not have one, please contact your Mawsool account manager or email us at `Info@mawsool.tech`.
+    
+    You can use the **Test Request** button on any of the endpoints below to execute live requests directly from your browser!
+  version: 1.0.0
+servers:
+  - url: https://apicool.mawsool.tech
+    description: Production Server
+
+tags:
+  - name: Search
+  - name: Enrichment
+  - name: Account
+
+# 1. Define Security Scheme
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Your unique API key for authentication.
+
+  schemas:
+    # Schema for the main successful response object
+    ProfileResponse:
+      type: object
+      properties:
+        contact__first_name: { type: string, nullable: true, example: "Omar" }
+        contact__last_name: { type: string, nullable: true, example: "Mahmoud" }
+        contact__name: { type: string, nullable: true, example: "Omar Mahmoud" }
+        contact__title: { type: string, nullable: true, example: "Chief Technology Officer" }
+        contact__organization_name: { type: string, nullable: true, example: "SP-Apps" }
+        contact__email: { type: string, format: email, nullable: true, example: "omar.mahmoud120@gmail.com" }
+        contact__email_status: { type: string, nullable: true, enum: [deliverable, risky, undeliverable, unknown], example: "deliverable" }
+        seniority: { type: string, nullable: true, example: "director" }
+        departments: { type: array, items: { type: string }, nullable: true, example: ["engineering"] }
+        subdepartments: { type: array, items: { type: string }, nullable: true }
+        functions: { type: array, items: { type: string }, nullable: true }
+        contact__headline: { type: string, nullable: true, example: "Co-founder & CTO | Mobile/Web Solutions Architect..." }
+        contact__phone_numbers:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+        organization__estimated_num_employees: { type: string, nullable: true, example: "1-10" }
+        organization__industries: { type: array, items: { type: string }, nullable: true, example: ["Information Technology and Services"] }
+        organization__keywords: { type: array, items: { type: string }, nullable: true }
+        contact__linkedin_url: { type: string, format: uri, nullable: true, example: "https://www.linkedin.com/in/omar-mahmoud120" }
+        organization__website_url: { type: string, format: uri, nullable: true, example: "http://www.sp-apps.com" }
+        organization__linkedin_url: { type: string, format: uri, nullable: true, example: "https://www.linkedin.com/company/sp-apps" }
+        organization__facebook_url: { type: string, format: uri, nullable: true }
+        organization__twitter_url: { type: string, format: uri, nullable: true }
+        contact__city: { type: string, nullable: true, example: "Amman" }
+        contact__state: { type: string, nullable: true, example: "Jordan" }
+        contact__country: { type: string, nullable: true, example: "Jordan" }
+        organization__raw_address: { type: string, nullable: true }
+        organization__city: { type: string, nullable: true, example: "Amman, Jordan" }
+        organization__state: { type: string, nullable: true }
+        organization__country: { type: string, nullable: true }
+        organization__short_description: { type: string, nullable: true }
+        organization__current_technologies: { type: array, items: { type: string }, nullable: true }
+        organization__founded_year: { type: number, nullable: true }
+        organization__annual_revenue: { type: string, nullable: true }
+        organization__total_funding: { type: string, nullable: true }
+        organization__latest_funding_stage: { type: string, nullable: true }
+        organization__funding_events: { type: array, items: { type: object }, nullable: true }
+        organization__latest_funding_round_date: { type: string, format: date, nullable: true }
+        organization__logo_url: { type: string, format: uri, nullable: true }
+        contact__photo_url: { type: string, format: uri, nullable: true }
+        contact__all_emails:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/EmailDetail'
+        employmentHistory:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/EmploymentHistoryEntry'
+        retrievedAt: { type: string, format: 'date-time' }
+        status: { type: string, example: "success" }
+        message: { type: string, example: "Requested email and phone information retrieved." }
+        creditsRemaining: { type: number, example: 9730 }
+        linkedin_url_searched: { type: string, format: uri }
+
+    PhoneNumber:
+      type: object
+      properties:
+        raw_number: { type: string, nullable: true, example: "+962799815179" }
+        sanitized_number: { type: string, nullable: true, example: "+962799815179" }
+        type: { type: string, nullable: true, example: "mobile" }
+        
+    EmailDetail:
+      type: object
+      properties:
+        email: { type: string, format: email, example: "omar.mahmoud120@gmail.com" }
+        verificationStatus: { type: string, enum: [deliverable, risky, undeliverable, unknown, verification_not_performed, verification_failed], example: "deliverable" }
+        isDisposable: { type: boolean, nullable: true }
+        score: { type: number, nullable: true, example: 99 }
+        details: { type: string, nullable: true }
+
+    EmploymentHistoryEntry:
+      type: object
+      properties:
+        companyName: { type: string, nullable: true, example: "SP-Apps" }
+        title: { type: string, nullable: true, example: "Chief Technology Officer" }
+        startDate: { type: string, format: date, nullable: true, example: "2020-01-01" }
+        endDate: { type: string, format: date, nullable: true }
+        current: { type: boolean, example: true }
+        companyWebsite: { type: string, format: uri, nullable: true }
+        companyLinkedinUrl: { type: string, format: uri, nullable: true }
+        companyIndustry: { type: string, nullable: true }
+        companyEmployeeCount: { type: string, nullable: true }
+
+    # Schema for the asynchronous "processing" response
+    ProcessingResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: processing
+        message:
+          type: string
+          example: "Enrichment is in progress. Please retry."
+          
+    # Generic schema for error responses
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+
+    SearchRequest:
+      type: object
+      example:
+        type: "people"
+        page: 1
+        limit: 10
+        filters:
+          keywords: "developer"
+          location:
+            include: ["Saudi Arabia", "United Arab Emirates"]
+            exclude: []
+          job_title:
+            include: ["Software Engineer", "CTO"]
+          company_headcount:
+            include: ["11-50", "51-200"]
+      properties:
+        type:
+          type: string
+          enum: [people, companies]
+          default: people
+          description: "The type of search to perform."
+        page:
+          type: integer
+          default: 1
+          minimum: 1
+          maximum: 15
+        limit:
+          type: integer
+          default: 10
+          maximum: 50
+        filters:
+          $ref: '#/components/schemas/SearchFilters'
+      required: [filters]
+
+    SearchFilters:
+      type: object
+      properties:
+        keywords:
+          type: string
+          description: "Global keyword search across names, titles, and descriptions."
+        first_name: { type: string }
+        last_name: { type: string }
+        job_title: { $ref: '#/components/schemas/FilterObject' }
+        company_name: { $ref: '#/components/schemas/FilterObject' }
+        industry: { $ref: '#/components/schemas/FilterObject' }
+        location:
+          $ref: '#/components/schemas/FilterObject'
+          description: "Country names (e.g., 'Saudi Arabia', 'United States')."
+        company_location:
+          $ref: '#/components/schemas/FilterObject'
+          description: "HQ Location. Country names (e.g., 'Saudi Arabia', 'United States')."
+        city: { $ref: '#/components/schemas/FilterObject' }
+        company_headcount:
+          $ref: '#/components/schemas/FilterObject'
+          description: "Ranges like '11-50', '501-1000'."
+        revenue: { $ref: '#/components/schemas/FilterObject' }
+        seniority: { $ref: '#/components/schemas/FilterObject' }
+        function: { $ref: '#/components/schemas/FilterObject' }
+        skills: { $ref: '#/components/schemas/FilterObject' }
+        language: { $ref: '#/components/schemas/FilterObject' }
+        school: { $ref: '#/components/schemas/FilterObject' }
+        total_experience_years:
+          $ref: '#/components/schemas/FilterObject'
+          description: "Total years of experience (e.g. '1 to 2 years', 'More than 10 years')."
+        years_in_current_role:
+          $ref: '#/components/schemas/FilterObject'
+          description: "Years in current company (e.g. 'Less than 1 year', '3 to 5 years')."
+        past_company:
+          $ref: '#/components/schemas/FilterObject'
+          description: "Past company names."
+        past_role:
+          $ref: '#/components/schemas/FilterObject'
+          description: "Past job titles/roles."
+        behavioral_keywords:
+          type: array
+          items: { type: string }
+          description: "Specific keywords indicating intent or behavior. All keywords are strictly matched using an AND condition."
+        exclude_public_ids:
+          type: array
+          items: { type: string }
+          description: "List of LinkedIn public IDs to explicitly exclude from the search results."
+
+    FilterObject:
+      type: object
+      properties:
+        include:
+          type: array
+          items: { type: string }
+        exclude:
+          type: array
+          items: { type: string }
+
+    SearchResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { type: object }
+        total:
+          type: string
+          description: "Formatted total results count (e.g., '~5K', '~1.2M')."
+        paging:
+          type: object
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            total_count:
+              type: integer
+              description: "Exact numeric total."
+        _source:
+          type: string
+          enum: [MENA, Global]
+
+# 2. Apply Security globally
+security:
+  - ApiKeyAuth: []
+
+# 3. Define Paths
+paths:
+  /contact:
+    get:
+      tags:
+        - Enrichment
+      summary: Enrich a LinkedIn Profile with Comprehensive Data
+      description: |-
+        Retrieves comprehensive contact and company information for a given LinkedIn profile URL.
+        
+        **Workflow:**
+        - If you receive a **200 OK** response, the data is complete.
+        - If you receive a **202 Accepted** response, it means the enrichment is in progress. You should retry the *exact same request* in 30-60 seconds to retrieve the final result.
+        
+        **Credits:**
+        - A charge of **5 credits** is applied for retrieving a valid email.
+        - A charge of **20 credits** is applied for retrieving a valid phone number.
+        - Charges are only applied once per data type for each unique profile.
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: The full LinkedIn profile URL to enrich.
+          schema:
+            type: string
+            format: uri
+            example: "https://www.linkedin.com/in/omar-mahmoud120/"
+        - name: fields
+          in: query
+          required: true
+          description: "Comma-separated list of fields to retrieve. Must include `email`, `phone`, or both (e.g., `email,phone`)."
+          schema:
+            type: string
+            example: "email,phone"
+        - name: country
+          in: query
+          required: false
+          description: "Optional 2-letter ISO country code (e.g., 'US', 'SA', 'AE') to prioritize phone numbers from this country."
+          schema:
+            type: string
+            example: "SA"
+      responses:
+        '200':
+          description: Successful enrichment. The response contains the full profile data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '202':
+          description: Enrichment is in progress. The request was accepted. Retry the request after a delay.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingResponse'
+        '400':
+          description: Bad Request. The `url` parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. The `X-API-Key` header is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment Required. The user has insufficient credits to perform the search or retrieve the data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found. The profile could not be found by any data provider.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse' # Returns the standard structure with null values
+  
+  /contact-only:
+    get:
+      tags:
+        - Enrichment
+      summary: Enrich a LinkedIn Profile (Legacy)
+      description: |-
+        This endpoint functions identically to `/contact`. It is maintained for backward compatibility. Please prefer using the `/contact` endpoint for new integrations.
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: The full LinkedIn profile URL to enrich.
+          schema:
+            type: string
+            format: uri
+            example: "https://www.linkedin.com/in/omar-mahmoud120/"
+        - name: fields
+          in: query
+          required: true
+          description: "Comma-separated list of fields to retrieve. Must include `email`, `phone`, or both (e.g., `email,phone`)."
+          schema:
+            type: string
+            example: "email,phone"
+        - name: country
+          in: query
+          required: false
+          description: "Optional 2-letter ISO country code (e.g., 'US', 'SA', 'AE') to prioritize phone numbers from this country."
+          schema:
+            type: string
+            example: "SA"
+      responses:
+        '200':
+          description: Successful enrichment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '202':
+          description: Enrichment in progress.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingResponse'
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment Required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /full-info:
+    get:
+      tags:
+        - Enrichment
+      summary: Enrich a LinkedIn Profile (Extended Details)
+      description: Retrieves extended profile data with an alternative response structure. This endpoint provides additional raw data points that may differ from the standard `/contact` response format, making it suitable for specialized integrations that require a flatter data schema.
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: The full LinkedIn profile URL to enrich.
+          schema:
+            type: string
+            format: uri
+            example: "https://www.linkedin.com/in/ingmar-klein"
+      responses:
+        '200':
+          description: Successful enrichment returning the extended response format.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The direct JSON response from the underlying provider. Structure may vary.
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /credits:
+    get:
+      tags:
+        - Account
+      summary: Check Remaining Credits
+      description: Returns the number of API credits currently remaining on your account.
+      responses:
+        '200':
+          description: Successfully retrieved credit balance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  creditsRemaining:
+                    type: integer
+                    example: 9730
+        '401':
+          description: Unauthorized. The API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /search:
+    post:
+      tags:
+        - Search
+      summary: Unified Search
+      description: Perform targeted searches for B2B profiles or companies with advanced filtering.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Successful search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '401':
+          description: Authentication failed
+        '429':
+          description: Rate limit exceeded

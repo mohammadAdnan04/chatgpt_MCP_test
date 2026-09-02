@@ -1,0 +1,1 @@
+const axios = require('axios'); async function test() { const response = await axios.post('https://leads-backend-tcng.onrender.com/linkedin_bulk/profiles', { links: ['https://www.linkedin.com/in/williamhgates/'] }, { headers: { 'api_key': '68cc066c2f641e3a07a09e10', 'Content-Type': 'application/json' } }); console.log(JSON.stringify(response.data, null, 2)); } test();

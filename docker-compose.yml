@@ -1,0 +1,98 @@
+# Local / Coolify Docker Compose.
+# Coolify: New Resource → Docker Compose → this file. Assign a domain per service.
+# Do not put secrets in this file — set them in Coolify Environment Variables.
+
+services:
+  back_end:
+    build:
+      context: ./back_end
+      dockerfile: Dockerfile
+    ports:
+      - "5000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3006}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:3006}
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:5000}
+      OAUTH_ISSUER: ${OAUTH_ISSUER:-http://localhost:5000}
+      MCP_RESOURCE_URL: ${MCP_RESOURCE_URL:-http://localhost:3002/mcp}
+      CHATGPT_MCP_INTERNAL_SECRET: ${CHATGPT_MCP_INTERNAL_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_not_used}
+      MAWSOOL_SEARCH_API: ${MAWSOOL_SEARCH_API:-http://middleware:3000}
+      MIDDLEWARE_URL: ${MIDDLEWARE_URL:-http://middleware:3000}
+      MAWSOOL_MIDDLEWARE_KEY: ${MAWSOOL_MIDDLEWARE_KEY}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+    depends_on:
+      - middleware
+
+  middleware:
+    build:
+      context: ./middleware_service
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      MONGO_URI: ${MONGO_URI}
+      API_MAWSOOL_MONGO_URI: ${API_MAWSOOL_MONGO_URI:-}
+      MAWSOOL_MIDDLEWARE_KEY: ${MAWSOOL_MIDDLEWARE_KEY}
+      MAWSOOL_ENGINE_URL: ${MAWSOOL_ENGINE_URL:-https://menasearch.mawsool.tech}
+      BACKEND_URL: ${BACKEND_URL:-http://back_end:3000}
+      API_URL: ${API_URL:-http://back_end:3000}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+      API_CLUB_KEY: ${API_CLUB_KEY:-}
+      APIFY_API_KEY: ${APIFY_API_KEY:-}
+      CONTACTOUT_TOKEN: ${CONTACTOUT_TOKEN:-}
+
+  front_end:
+    build:
+      context: ./front_end
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000}
+    ports:
+      - "3006:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+    depends_on:
+      - back_end
+
+  chatgpt-mcp:
+    build:
+      context: ./chatgpt-mcp
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      SERVER_URL: ${CHATGPT_MCP_SERVER_URL:-http://localhost:3000}
+      MCP_RESOURCE_URL: ${CHATGPT_MCP_RESOURCE_URL:-http://localhost:3000/mcp}
+      MCP_AUTH_REQUIRED: ${MCP_AUTH_REQUIRED:-true}
+      AUTH_ISSUER: ${AUTH_ISSUER:-https://YOUR_TENANT.auth0.com/}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-http://localhost:3000/mcp}
+      WEBSITE_URL: ${WEBSITE_URL:-http://localhost:5000}
+      CHATGPT_MCP_INTERNAL_SECRET: ${CHATGPT_MCP_INTERNAL_SECRET}
+    depends_on:
+      - back_end
+
+  mawsool-mcp:
+    build:
+      context: ./Mawsool-MCP
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      SERVER_URL: ${CLAUDE_MCP_SERVER_URL:-http://localhost:3002}
+      MCP_RESOURCE_URL: ${CLAUDE_MCP_RESOURCE_URL:-http://localhost:3002/mcp}
+      OAUTH_ISSUER: ${OAUTH_ISSUER:-http://localhost:5000}
+      MCP_AUTH_REQUIRED: ${MCP_AUTH_REQUIRED:-true}
+    depends_on:
+      - back_end

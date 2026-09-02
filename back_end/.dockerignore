@@ -1,0 +1,8 @@
+node_modules
+.git
+.env
+.env.*
+!.env.chatgpt.example
+*.log
+unverified_users_export.csv
+.well-known

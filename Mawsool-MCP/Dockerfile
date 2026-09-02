@@ -46,8 +46,9 @@ COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/package.json ./package.json
 
 EXPOSE 3000
+ENV PORT=3000
 
 # Run the built server directly rather than via `npm start` / `skybridge start`.
 # Each wrapper adds a process layer that can swallow SIGTERM, which makes
 # graceful shutdowns time out on platforms like Cloud Run, Fly, and k8s.
-CMD ["node", "dist/__entry.js"]
+CMD ["sh", "-c", "export __PORT=${PORT:-3000}; exec node dist/__entry.js"]

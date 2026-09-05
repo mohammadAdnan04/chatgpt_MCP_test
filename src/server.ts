@@ -436,5 +436,12 @@ server.express.get("/sse", (req: any, res: any) => {
   res.on("close", cleanup);
 });
 
+server.express.get("/", (_req: any, res: any) => {
+  res.status(200).type("text/plain").send("ok");
+});
+server.express.get("/health", (_req: any, res: any) => {
+  res.status(200).json({ ok: true, auth: authRequired() });
+});
+
 export default await server.run();
 export type AppType = typeof server;

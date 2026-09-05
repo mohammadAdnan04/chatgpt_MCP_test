@@ -57,7 +57,9 @@ export function getDevUserEmail(): string {
 }
 
 export function authRequired(): boolean {
-  return String(process.env.MCP_AUTH_REQUIRED || "true").toLowerCase() !== "false";
+  return !["false", "0", "no", "off"].includes(
+    String(process.env.MCP_AUTH_REQUIRED || "true").trim().toLowerCase(),
+  );
 }
 
 export function getProtectedResourceDoc() {

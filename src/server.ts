@@ -377,7 +377,6 @@ server = server
         },
         true,
       );
-      return toolResult(data, isError);
     },
   );
 

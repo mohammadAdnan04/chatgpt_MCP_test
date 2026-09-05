@@ -9,6 +9,7 @@ import {
   getAuthIssuer,
   getMcpResourceUrl,
   getServerUrl,
+  getWebsiteUrl,
   getAuthorizationServerMetadata,
   getProtectedResourceDoc,
 } from "./config.js";
@@ -92,56 +93,64 @@ function attachMcpCors(req: any, res: any, next: any) {
   next();
 }
 
+const toolSecurity = authRequired()
+  ? [{ type: "oauth2" as const, scopes: ["mcp"] }]
+  : [];
+
 let server = new McpServer(
   {
     name: "MawsoolContactServer",
     version: "1.0.0",
   },
   { capabilities: {} },
-).use((req: any, res: any, next: any) => {
-  if (
-    isDiscoveryGet(
-      req,
-      "/.well-known/oauth-protected-resource",
-      "/.well-known/oauth-protected-resource/mcp",
-      "/mcp/.well-known/oauth-protected-resource",
-    )
-  ) {
-    res.setHeader("Content-Type", "application/json");
-    res.status(200).json(getProtectedResourceDoc());
-    return;
-  }
-  if (
-    isDiscoveryGet(
-      req,
-      "/.well-known/oauth-authorization-server",
-      "/.well-known/oauth-authorization-server/mcp",
-      "/mcp/.well-known/oauth-authorization-server",
-      "/.well-known/openid-configuration",
-      "/.well-known/openid-configuration/mcp",
-      "/mcp/.well-known/openid-configuration",
-    )
-  ) {
-    getAuthorizationServerMetadata()
-      .then((doc) => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).json(doc);
-      })
-      .catch((err) => {
-        console.error("[chatgpt-mcp] AS metadata fetch failed:", err?.message || err);
-        res.status(502).json({ error: "server_error" });
-      });
-    return;
-  }
-  next();
-});
-
-server = server.use(
-  mcpAuthMetadataRouter({
-    oauthMetadata: placeholderAsMetadata(),
-    resourceServerUrl: new URL(getMcpResourceUrl()),
-  }),
 );
+
+if (authRequired()) {
+  server = server.use((req: any, res: any, next: any) => {
+    if (
+      isDiscoveryGet(
+        req,
+        "/.well-known/oauth-protected-resource",
+        "/.well-known/oauth-protected-resource/mcp",
+        "/mcp/.well-known/oauth-protected-resource",
+      )
+    ) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).json(getProtectedResourceDoc());
+      return;
+    }
+    if (
+      isDiscoveryGet(
+        req,
+        "/.well-known/oauth-authorization-server",
+        "/.well-known/oauth-authorization-server/mcp",
+        "/mcp/.well-known/oauth-authorization-server",
+        "/.well-known/openid-configuration",
+        "/.well-known/openid-configuration/mcp",
+        "/mcp/.well-known/openid-configuration",
+      )
+    ) {
+      getAuthorizationServerMetadata()
+        .then((doc) => {
+          res.setHeader("Content-Type", "application/json");
+          res.status(200).json(doc);
+        })
+        .catch((err) => {
+          console.error("[chatgpt-mcp] AS metadata fetch failed:", err?.message || err);
+          res.status(502).json({ error: "server_error" });
+        });
+      return;
+    }
+    next();
+  });
+
+  server = server.use(
+    mcpAuthMetadataRouter({
+      oauthMetadata: placeholderAsMetadata(),
+      resourceServerUrl: new URL(getMcpResourceUrl()),
+    }),
+  );
+}
 
 // Copied from Mawsool-MCP: ChatGPT browser CORS + Accept + GET /mcp + /sse.
 server = server.use("/mcp", attachMcpCors);
@@ -169,7 +178,9 @@ if (authRequired()) {
     `[chatgpt-mcp] JWT auth ON. issuer=${getAuthIssuer()} resource=${getMcpResourceUrl()}`,
   );
 } else {
-  console.log("[chatgpt-mcp] MCP_AUTH_REQUIRED=false");
+  console.log(
+    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. website=${getWebsiteUrl()} user=${process.env.DEV_USER_EMAIL || "(set DEV_USER_EMAIL)"}`,
+  );
 }
 
 server = server
@@ -192,7 +203,7 @@ server = server
         idempotentHint: true,
         openWorldHint: false,
       },
-      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      securitySchemes: toolSecurity,
       view: { component: "credits" },
     },
     async (_input, extra) => {
@@ -230,7 +241,7 @@ server = server
         idempotentHint: true,
         openWorldHint: true,
       },
-      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      securitySchemes: toolSecurity,
       view: { component: "search" },
     },
     async ({ filters, search_type, page, limit }, extra) => {
@@ -261,7 +272,7 @@ server = server
         idempotentHint: false,
         openWorldHint: true,
       },
-      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      securitySchemes: toolSecurity,
       view: { component: "contact" },
     },
     async ({ url, fields, country }, extra) => {
@@ -289,7 +300,7 @@ server = server
         idempotentHint: true,
         openWorldHint: true,
       },
-      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      securitySchemes: toolSecurity,
       view: { component: "profile" },
     },
     async ({ url }, extra) => {
@@ -339,7 +350,7 @@ server = server
         idempotentHint: false,
         openWorldHint: false,
       },
-      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      securitySchemes: toolSecurity,
       view: { component: "saved" },
     },
     async ({ list_name, list_id, create_if_missing, profiles }, extra) => {

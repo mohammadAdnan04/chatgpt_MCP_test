@@ -110,7 +110,7 @@ export async function assertChatgptMcpConfig(): Promise<void> {
 
   if (!authRequired()) {
     console.log(
-      `[chatgpt-mcp] LOCAL MODE. website=${getWebsiteUrl()} resource=${resource} email=${getDevUserEmail() || "(set DEV_USER_EMAIL)"}`,
+      `[chatgpt-mcp] NO AUTH. website=${getWebsiteUrl()} resource=${resource} identity=api_key pasted in chat`,
     );
     return;
   }

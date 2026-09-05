@@ -96,6 +96,19 @@ export async function verifyAccessToken(token: string): Promise<AuthInfo> {
   };
 }
 
+const MISSING_API_KEY =
+  "Paste your Mawsool API key in the chat (use your website login email), then try again.";
+
+function takeApiKey(body?: Record<string, unknown>): {
+  apiKey: string;
+  payload: Record<string, unknown>;
+} {
+  const payload = { ...(body || {}) };
+  const apiKey = String(payload.api_key || "").trim();
+  delete payload.api_key;
+  return { apiKey, payload };
+}
+
 async function websiteRequest(
   auth: AuthInfo | null | undefined,
   method: string,
@@ -103,21 +116,25 @@ async function websiteRequest(
   body?: Record<string, unknown>,
 ): Promise<{ data: any; isError: boolean }> {
   const resolved = resolveAuth(auth);
+  const { apiKey, payload } = takeApiKey(body);
   const email = resolved?.extra?.email as string | undefined;
-  if (!email) {
-    return { data: { error: "Not authenticated" }, isError: true };
+  if (!apiKey && !email) {
+    return { data: { error: MISSING_API_KEY }, isError: true };
   }
 
   try {
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Mawsool-Internal-Secret": getInternalSecret(),
+    };
+    if (apiKey) headers["X-Mawsool-Api-Key"] = apiKey;
+    else if (email) headers["X-Mawsool-User-Email"] = email;
+
     const response = await fetch(`${getWebsiteUrl()}${path}`, {
       method,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-Mawsool-Internal-Secret": getInternalSecret(),
-        "X-Mawsool-User-Email": email,
-      },
-      body: method === "GET" ? undefined : JSON.stringify(body || {}),
+      headers,
+      body: method === "GET" ? undefined : JSON.stringify(payload),
     });
     const data = await response.json().catch(() => ({
       error: `Invalid response (${response.status})`,
@@ -141,8 +158,13 @@ async function websiteRequest(
   }
 }
 
-export async function fetchAccountCredits(auth?: AuthInfo | null) {
-  const { data, isError } = await websiteRequest(auth, "GET", "/api/internal/mcp/credits");
+export async function fetchAccountCredits(auth?: AuthInfo | null, apiKey?: string) {
+  const { data, isError } = await websiteRequest(
+    auth,
+    "GET",
+    "/api/internal/mcp/credits",
+    apiKey ? { api_key: apiKey } : undefined,
+  );
   if (isError) return { error: data.error || "Failed to load credits" };
   return data;
 }

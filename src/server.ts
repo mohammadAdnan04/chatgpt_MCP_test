@@ -179,17 +179,26 @@ if (authRequired()) {
   );
 } else {
   console.log(
-    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. website=${getWebsiteUrl()} user=${process.env.DEV_USER_EMAIL || "(set DEV_USER_EMAIL)"}`,
+    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. Paste api_key in chat. website=${getWebsiteUrl()}`,
   );
 }
+
+const apiKeyField = z
+  .string()
+  .min(1)
+  .describe(
+    "Required. User pastes this in the ChatGPT chat — no login. Use the Mawsool website login email as the API key. Ask once if missing, then reuse the same value on every tool call. Never invent or guess it.",
+  );
 
 server = server
   .registerTool(
     {
       name: "check-credits",
       description:
-        "Returns Mawsool website account wallet credits for the signed-in user.",
-      inputSchema: {},
+        "Returns Mawsool website account wallet credits. Requires api_key pasted in chat (website login email). No ChatGPT login.",
+      inputSchema: {
+        api_key: apiKeyField,
+      },
       outputSchema: z
         .object({
           creditsRemaining: z.number().optional(),
@@ -206,8 +215,8 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "credits" },
     },
-    async (_input, extra) => {
-      const result = await fetchAccountCredits(extra.authInfo || null);
+    async ({ api_key }, extra) => {
+      const result = await fetchAccountCredits(extra.authInfo || null, api_key);
       const text =
         typeof result.creditsRemaining === "number"
           ? `You have ${result.creditsRemaining.toLocaleString()} Mawsool account credits remaining.`
@@ -223,8 +232,9 @@ server = server
     {
       name: "search",
       description:
-        "Search B2B profiles/companies via Mawsool website. Browse costs 0 wallet credits but uses the website daily search quota. Max 25 results per call (same as website page size). For more results, call again with page=2,3… — each page is one search.",
+        "Search B2B profiles/companies via Mawsool website. Requires api_key pasted in chat (website login email). Browse costs 0 wallet credits but uses the website daily search quota. Max 25 results per call (same as website page size). For more results, call again with page=2,3… — each page is one search.",
       inputSchema: {
+        api_key: apiKeyField,
         filters: z.record(z.string(), z.any()).describe("Search filters."),
         search_type: z.string().default("people").describe("'people' or 'companies'."),
         page: z.number().default(1).describe("1-based page. Each page counts as one daily search."),
@@ -244,8 +254,9 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "search" },
     },
-    async ({ filters, search_type, page, limit }, extra) => {
+    async ({ api_key, filters, search_type, page, limit }, extra) => {
       const { data, isError } = await callWebsite(extra.authInfo, "search", {
+        api_key,
         filters,
         search_type,
         page,
@@ -258,8 +269,9 @@ server = server
     {
       name: "contact-only",
       description:
-        "Reveal LinkedIn contact info via Mawsool website. Credits follow website reveal rules (email 5 / phone 20 only when billable). Also marks the profile as revealed and saves it to the user's 'saved leads' list (same as the website).",
+        "Reveal LinkedIn contact info via Mawsool website. Requires api_key pasted in chat (website login email). Credits follow website reveal rules (email 5 / phone 20 only when billable). Also marks the profile as revealed and saves it to the user's 'saved leads' list (same as the website).",
       inputSchema: {
+        api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
         fields: z.string().min(1).describe("Comma-separated fields, e.g. 'email,phone'."),
         country: z.string().optional(),
@@ -275,8 +287,9 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "contact" },
     },
-    async ({ url, fields, country }, extra) => {
+    async ({ api_key, url, fields, country }, extra) => {
       const { data, isError } = await callWebsite(extra.authInfo, "contact", {
+        api_key,
         url,
         fields,
         country,
@@ -288,8 +301,9 @@ server = server
     {
       name: "full-info-without-contact",
       description:
-        "LinkedIn profile organizational lookup via Mawsool website (no SaaS contact reveal charge).",
+        "LinkedIn profile organizational lookup via Mawsool website (no SaaS contact reveal charge). Requires api_key pasted in chat (website login email).",
       inputSchema: {
+        api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
       },
       outputSchema: z.object({}).passthrough(),
@@ -303,8 +317,9 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "profile" },
     },
-    async ({ url }, extra) => {
+    async ({ api_key, url }, extra) => {
       const { data, isError } = await callWebsite(extra.authInfo, "full-info", {
+        api_key,
         url,
       });
       return toolResult(data, isError);
@@ -314,8 +329,9 @@ server = server
     {
       name: "save-to-list",
       description:
-        "Save one or more LinkedIn profiles into a Mawsool website list (same as Add to list). Does not run automatically on search — only when the user asks to save. Pass list_name (creates list if missing) or list_id. Copy first_name, last_name, title, company, and headline from search results when available so the website list columns fill in.",
+        "Save one or more LinkedIn profiles into a Mawsool website list (same as Add to list). Requires api_key pasted in chat (website login email). Does not run automatically on search — only when the user asks to save. Pass list_name (creates list if missing) or list_id. Copy first_name, last_name, title, company, and headline from search results when available so the website list columns fill in.",
       inputSchema: {
+        api_key: apiKeyField,
         list_name: z.string().optional().describe("Target list name, e.g. 'Outreach Q1'. Created if missing."),
         list_id: z.string().optional().describe("Existing Mawsool list id (if known)."),
         create_if_missing: z.boolean().optional().describe("Create list_name when it does not exist (default true)."),
@@ -353,8 +369,9 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "saved" },
     },
-    async ({ list_name, list_id, create_if_missing, profiles }, extra) => {
+    async ({ api_key, list_name, list_id, create_if_missing, profiles }, extra) => {
       const { data, isError } = await callWebsite(extra.authInfo, "save-to-list", {
+        api_key,
         list_name,
         list_id,
         create_if_missing,

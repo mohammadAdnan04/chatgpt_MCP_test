@@ -15,23 +15,25 @@ Pair with the website API that has `/api/internal/mcp` and the same `CHATGPT_MCP
 ```
 NODE_ENV=production
 PORT=3000
-SERVER_URL=https://chatgpt-mcp.example.com
-MCP_RESOURCE_URL=https://chatgpt-mcp.example.com/mcp
-MCP_AUTH_REQUIRED=true
-AUTH_ISSUER=https://YOUR_TENANT.auth0.com/
-AUTH_AUDIENCE=https://chatgpt-mcp.example.com/mcp
-WEBSITE_URL=https://api.example.com
+SERVER_URL=https://test-mcp.mawsool.tech
+MCP_RESOURCE_URL=https://test-mcp.mawsool.tech/mcp
+MCP_AUTH_REQUIRED=false
+WEBSITE_URL=https://backtest.mawsool.tech
 CHATGPT_MCP_INTERNAL_SECRET=<same as website back_end>
 ```
 
-Uncheck **Available at Buildtime** for `NODE_ENV`. Auth0 order: [AUTH0.md](AUTH0.md).
+Do **not** set `AUTH_ISSUER` / `AUTH_AUDIENCE` / `DEV_USER_EMAIL` for this mode. ChatGPT Connect with **no auth**. Each user pastes their Mawsool website login email as `api_key` in the chat.
+
+Uncheck **Available at Buildtime** for `NODE_ENV`.
+
+To turn Auth0 back on later, see [AUTH0.md](AUTH0.md).
 
 ## Local
 
 ```bash
 cp .env.example .env
 npm install
-# MCP_AUTH_REQUIRED=false and DEV_USER_EMAIL for DevTools
+# MCP_AUTH_REQUIRED=false — paste api_key (website email) in ChatGPT
 npm run dev
 ```
 

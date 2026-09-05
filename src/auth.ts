@@ -123,22 +123,37 @@ async function websiteRequest(
   }
 
   try {
+    const website = getWebsiteUrl();
     const headers: Record<string, string> = {
       Accept: "application/json",
       "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (compatible; MawsoolChatGPT-MCP/1.0)",
       "X-Mawsool-Internal-Secret": getInternalSecret(),
     };
-    if (apiKey) headers["X-Mawsool-Api-Key"] = apiKey;
-    else if (email) headers["X-Mawsool-User-Email"] = email;
+    if (apiKey.includes("@")) {
+      headers["X-Mawsool-User-Email"] = apiKey.toLowerCase();
+    } else if (apiKey) {
+      headers["X-Mawsool-User-Key"] = apiKey;
+    } else if (email) {
+      headers["X-Mawsool-User-Email"] = email;
+    }
 
-    const response = await fetch(`${getWebsiteUrl()}${path}`, {
+    const response = await fetch(`${website}${path}`, {
       method,
       headers,
       body: method === "GET" ? undefined : JSON.stringify(payload),
     });
-    const data = await response.json().catch(() => ({
-      error: `Invalid response (${response.status})`,
-    }));
+    const raw = await response.text();
+    let data: any;
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch {
+      data = {
+        error: `Website returned ${response.status} (not JSON): ${String(raw)
+          .slice(0, 180)
+          .replace(/\s+/g, " ")}`,
+      };
+    }
     if (!response.ok) {
       return {
         data: {

@@ -1,8 +1,10 @@
-import { getApicoolUrl, getSearchApiUrl } from "./config.js";
+/** Official Mawsool API from https://docs.mawsool.tech/ (openapi.yaml). */
+const APICOOL = "https://apicool.mawsool.tech";
+const COOLSEARCH = "https://coolsearch.mawsool.tech";
+const SEARCH_MAX_LIMIT = 50;
 
-const SEARCH_MAX_LIMIT = 25;
 const MISSING_API_KEY =
-  "Paste your Mawsool API key in the chat, then try again. This is the X-API-Key from api.mawsool.tech — not a website login.";
+  "Paste your Mawsool X-API-Key in the chat (from https://docs.mawsool.tech/), then try again.";
 
 function requireKey(apiKey: string | undefined): string | null {
   const key = String(apiKey || "").trim();
@@ -31,8 +33,6 @@ async function mawsoolFetch(
         Accept: "application/json",
         "Content-Type": "application/json",
         "X-API-Key": apiKey,
-        "x-api-key": apiKey,
-        "User-Agent": "MawsoolChatGPT-MCP/1.0",
       },
       body: method === "GET" ? undefined : JSON.stringify(opts?.body || {}),
     });
@@ -42,7 +42,7 @@ async function mawsoolFetch(
       data = raw ? JSON.parse(raw) : {};
     } catch {
       data = {
-        error: `Upstream returned ${response.status} (not JSON): ${String(raw)
+        error: `Mawsool API returned ${response.status} (not JSON): ${String(raw)
           .slice(0, 180)
           .replace(/\s+/g, " ")}`,
       };
@@ -64,7 +64,7 @@ async function mawsoolFetch(
     return {
       status: 502,
       isError: true,
-      data: { error: e.message || "Upstream request failed" },
+      data: { error: e.message || "Mawsool API request failed" },
     };
   }
 }
@@ -77,13 +77,11 @@ function creditsFrom(data: any): number | undefined {
 export async function fetchAccountCredits(apiKey?: string) {
   const key = requireKey(apiKey);
   if (!key) return { error: MISSING_API_KEY };
-  const { data, isError } = await mawsoolFetch(key, "GET", `${getApicoolUrl()}/credits`);
+  const { data, isError } = await mawsoolFetch(key, "GET", `${APICOOL}/credits`);
   if (isError) return { error: data.error || "Failed to load credits" };
-  const creditsRemaining = creditsFrom(data);
   return {
     ...data,
-    creditsRemaining,
-    source: "apicool",
+    creditsRemaining: creditsFrom(data),
   };
 }
 
@@ -105,12 +103,12 @@ export async function searchMawsool(
   const safeLimit = Math.min(Math.max(1, requested), SEARCH_MAX_LIMIT);
   const safePage = Math.max(1, Number(input.page) || 1);
 
-  const result = await mawsoolFetch(key, "POST", `${getSearchApiUrl()}/search`, {
+  const result = await mawsoolFetch(key, "POST", `${COOLSEARCH}/search`, {
     body: {
-      filters: input.filters && typeof input.filters === "object" ? input.filters : {},
+      type,
       page: safePage,
       limit: safeLimit,
-      type,
+      filters: input.filters && typeof input.filters === "object" ? input.filters : {},
     },
   });
   if (!result.isError) {
@@ -119,7 +117,6 @@ export async function searchMawsool(
       creditsRemaining: creditsFrom(result.data),
       page: safePage,
       limitApplied: safeLimit,
-      source: "search_api",
     };
   }
   return result;
@@ -135,31 +132,25 @@ export async function contactMawsool(
     return { data: { error: "url and fields are required" }, isError: true };
   }
 
-  let result = await mawsoolFetch(key, "GET", `${getApicoolUrl()}/contact`, {
+  let result = await mawsoolFetch(key, "GET", `${APICOOL}/contact`, {
     params: { url: input.url, fields: input.fields, country: input.country },
   });
 
-  if (result.status === 202 || result.data?.retry_needed) {
-    await new Promise((r) => setTimeout(r, 8000));
-    result = await mawsoolFetch(key, "GET", `${getApicoolUrl()}/contact`, {
-      params: { url: input.url, fields: input.fields, country: input.country },
-    });
-    if (result.status === 202 || result.data?.retry_needed) {
-      return {
-        data: {
-          error: "Taking longer than expected. Ask me to retry in 30 seconds.",
-          retry_needed: true,
-        },
-        isError: true,
-      };
-    }
+  if (result.status === 202 || result.data?.retry_needed || result.data?.status === "processing") {
+    return {
+      data: {
+        error: "Enrichment is in progress. Retry the same request in 30–60 seconds.",
+        retry_needed: true,
+        status: "processing",
+      },
+      isError: true,
+    };
   }
 
   if (!result.isError) {
     result.data = {
       ...result.data,
       creditsRemaining: creditsFrom(result.data),
-      source: "apicool",
     };
   }
   return result;
@@ -170,14 +161,13 @@ export async function fullInfoMawsool(apiKey: string | undefined, url?: string) 
   if (!key) return { data: { error: MISSING_API_KEY }, isError: true };
   if (!url) return { data: { error: "url is required" }, isError: true };
 
-  const result = await mawsoolFetch(key, "GET", `${getApicoolUrl()}/full-info`, {
+  const result = await mawsoolFetch(key, "GET", `${APICOOL}/full-info`, {
     params: { url },
   });
   if (!result.isError) {
     result.data = {
       ...result.data,
       creditsRemaining: creditsFrom(result.data),
-      source: "apicool",
     };
   }
   return result;

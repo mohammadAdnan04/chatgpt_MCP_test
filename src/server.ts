@@ -15,8 +15,6 @@ import {
   getAuthIssuer,
   getMcpResourceUrl,
   getServerUrl,
-  getApicoolUrl,
-  getSearchApiUrl,
   getAuthorizationServerMetadata,
   getProtectedResourceDoc,
 } from "./config.js";
@@ -186,7 +184,7 @@ if (authRequired()) {
   );
 } else {
   console.log(
-    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. Paste api_key in chat. apicool=${getApicoolUrl()} search=${getSearchApiUrl()}`,
+    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. Paste X-API-Key in chat (https://docs.mawsool.tech/).`,
   );
 }
 
@@ -194,7 +192,7 @@ const apiKeyField = z
   .string()
   .min(1)
   .describe(
-    "Required. User pastes this in the ChatGPT chat — no login. This is the Mawsool X-API-Key from the API dashboard (not a website email). Ask once if missing, then reuse it on every tool call. Never invent or guess it.",
+    "Required. User pastes this in the ChatGPT chat — no login. Mawsool X-API-Key from https://docs.mawsool.tech/. Ask once if missing, then reuse it on every tool call. Never invent or guess it.",
   );
 
 server = server
@@ -202,7 +200,7 @@ server = server
     {
       name: "check-credits",
       description:
-        "Returns Mawsool API credits for the pasted api_key (Apicool). No ChatGPT login and no website.",
+        "GET /credits — remaining Mawsool API credits for the pasted X-API-Key. See https://docs.mawsool.tech/",
       inputSchema: {
         api_key: apiKeyField,
       },
@@ -239,16 +237,16 @@ server = server
     {
       name: "search",
       description:
-        "Search B2B profiles/companies via the Mawsool search API. Requires api_key pasted in chat (X-API-Key). Max 25 results per call. For more results, call again with page=2,3…",
+        "POST /search — people or companies (https://docs.mawsool.tech/). Requires X-API-Key. Max 50 results per page.",
       inputSchema: {
         api_key: apiKeyField,
         filters: z.record(z.string(), z.any()).describe("Search filters."),
         search_type: z.string().default("people").describe("'people' or 'companies'."),
-        page: z.number().default(1).describe("1-based page. Each page counts as one daily search."),
+        page: z.number().default(1).describe("1-based page."),
         limit: z
           .number()
           .default(10)
-          .describe("Results per page. Capped at 25 (website page size). Do not request 100+ in one call."),
+          .describe("Results per page. Default 10, max 50 (Mawsool API)."),
       },
       outputSchema: z.object({}).passthrough(),
       annotations: {
@@ -275,7 +273,7 @@ server = server
     {
       name: "contact-only",
       description:
-        "Reveal LinkedIn contact info via Apicool. Requires api_key pasted in chat (X-API-Key). fields e.g. 'email,phone'.",
+        "GET /contact — enrich a LinkedIn URL (email 5 credits, phone 20). Requires X-API-Key. fields e.g. 'email,phone'.",
       inputSchema: {
         api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
@@ -306,7 +304,7 @@ server = server
     {
       name: "full-info-without-contact",
       description:
-        "LinkedIn profile organizational lookup via Apicool (no contact reveal). Requires api_key pasted in chat (X-API-Key).",
+        "GET /full-info — LinkedIn profile details without contact reveal. Requires X-API-Key.",
       inputSchema: {
         api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),

@@ -41,17 +41,6 @@ export function getJwksUrl(): string {
   return `${issuer}/.well-known/jwks.json`;
 }
 
-export function getApicoolUrl(): string {
-  return optional("APICOOL_URL", "https://apicool.mawsool.tech").replace(/\/+$/, "");
-}
-
-export function getSearchApiUrl(): string {
-  return optional(
-    "SEARCH_API_URL",
-    optional("MAWSOOL_SEARCH_API", "https://middleware-test.mawsool.tech"),
-  ).replace(/\/+$/, "");
-}
-
 export function authRequired(): boolean {
   return !["false", "0", "no", "off"].includes(
     String(process.env.MCP_AUTH_REQUIRED || "true").trim().toLowerCase(),
@@ -98,15 +87,13 @@ async function fetchIdpMetadata(): Promise<Record<string, unknown> | null> {
 export async function assertChatgptMcpConfig(): Promise<void> {
   getServerUrl();
   getMcpResourceUrl();
-  getApicoolUrl();
-  getSearchApiUrl();
   const issuer = getAuthIssuer();
   const audience = getAuthAudience();
   const resource = getMcpResourceUrl();
 
   if (!authRequired()) {
     console.log(
-      `[chatgpt-mcp] NO AUTH. apicool=${getApicoolUrl()} search=${getSearchApiUrl()} resource=${resource} identity=api_key pasted in chat`,
+      `[chatgpt-mcp] NO AUTH. Mawsool API https://docs.mawsool.tech/ — paste X-API-Key in chat. resource=${resource}`,
     );
     return;
   }

@@ -1,8 +1,8 @@
 # ChatGPT MCP (Mawsool)
 
-Standalone ChatGPT MCP. **Does not call** `backtest.mawsool.tech` or the website API.
+Standalone ChatGPT connector. No website, no OAuth. Users paste a Mawsool **X-API-Key** in chat.
 
-Users paste their Mawsool **X-API-Key** in chat. Tools call Apicool + the search API directly.
+Tools match [docs.mawsool.tech](https://docs.mawsool.tech/): `GET /credits`, `POST /search`, `GET /contact`, `GET /full-info`.
 
 Do not deploy this over Claude / `mcp.mawsool.tech`.
 
@@ -19,11 +19,9 @@ PORT=3000
 SERVER_URL=https://test-mcp.mawsool.tech
 MCP_RESOURCE_URL=https://test-mcp.mawsool.tech/mcp
 MCP_AUTH_REQUIRED=false
-APICOOL_URL=https://apicool.mawsool.tech
-SEARCH_API_URL=https://middleware-test.mawsool.tech
 ```
 
-Remove `WEBSITE_URL`, `CHATGPT_MCP_INTERNAL_SECRET`, `AUTH_ISSUER`, `DEV_USER_EMAIL`.
+Remove `WEBSITE_URL`, `APICOOL_URL`, `SEARCH_API_URL`, `CHATGPT_MCP_INTERNAL_SECRET`, `AUTH_ISSUER`.
 
 Uncheck **Available at Buildtime** for `NODE_ENV`.
 

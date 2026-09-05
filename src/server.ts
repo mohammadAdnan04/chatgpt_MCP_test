@@ -2,14 +2,21 @@ import { McpServer } from "skybridge/server";
 import { z } from "zod";
 import { mcpAuthMetadataRouter } from "@modelcontextprotocol/sdk/server/auth/router.js";
 import { requireBearerAuth } from "@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js";
-import { verifyAccessToken, fetchAccountCredits, callWebsite } from "./auth.js";
+import { verifyAccessToken } from "./auth.js";
+import {
+  fetchAccountCredits,
+  searchMawsool,
+  contactMawsool,
+  fullInfoMawsool,
+} from "./mawsool.js";
 import {
   assertChatgptMcpConfig,
   authRequired,
   getAuthIssuer,
   getMcpResourceUrl,
   getServerUrl,
-  getWebsiteUrl,
+  getApicoolUrl,
+  getSearchApiUrl,
   getAuthorizationServerMetadata,
   getProtectedResourceDoc,
 } from "./config.js";
@@ -179,7 +186,7 @@ if (authRequired()) {
   );
 } else {
   console.log(
-    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. Paste api_key in chat. website=${getWebsiteUrl()}`,
+    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. Paste api_key in chat. apicool=${getApicoolUrl()} search=${getSearchApiUrl()}`,
   );
 }
 
@@ -187,7 +194,7 @@ const apiKeyField = z
   .string()
   .min(1)
   .describe(
-    "Required. User pastes this in the ChatGPT chat — no login. Use the Mawsool website login email as the API key. Ask once if missing, then reuse the same value on every tool call. Never invent or guess it.",
+    "Required. User pastes this in the ChatGPT chat — no login. This is the Mawsool X-API-Key from the API dashboard (not a website email). Ask once if missing, then reuse it on every tool call. Never invent or guess it.",
   );
 
 server = server
@@ -195,7 +202,7 @@ server = server
     {
       name: "check-credits",
       description:
-        "Returns Mawsool website account wallet credits. Requires api_key pasted in chat (website login email). No ChatGPT login.",
+        "Returns Mawsool API credits for the pasted api_key (Apicool). No ChatGPT login and no website.",
       inputSchema: {
         api_key: apiKeyField,
       },
@@ -215,8 +222,8 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "credits" },
     },
-    async ({ api_key }, extra) => {
-      const result = await fetchAccountCredits(extra.authInfo || null, api_key);
+    async ({ api_key }) => {
+      const result = await fetchAccountCredits(api_key);
       const text =
         typeof result.creditsRemaining === "number"
           ? `You have ${result.creditsRemaining.toLocaleString()} Mawsool account credits remaining.`
@@ -232,7 +239,7 @@ server = server
     {
       name: "search",
       description:
-        "Search B2B profiles/companies via Mawsool website. Requires api_key pasted in chat (website login email). Browse costs 0 wallet credits but uses the website daily search quota. Max 25 results per call (same as website page size). For more results, call again with page=2,3… — each page is one search.",
+        "Search B2B profiles/companies via the Mawsool search API. Requires api_key pasted in chat (X-API-Key). Max 25 results per call. For more results, call again with page=2,3…",
       inputSchema: {
         api_key: apiKeyField,
         filters: z.record(z.string(), z.any()).describe("Search filters."),
@@ -254,9 +261,8 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "search" },
     },
-    async ({ api_key, filters, search_type, page, limit }, extra) => {
-      const { data, isError } = await callWebsite(extra.authInfo, "search", {
-        api_key,
+    async ({ api_key, filters, search_type, page, limit }) => {
+      const { data, isError } = await searchMawsool(api_key, {
         filters,
         search_type,
         page,
@@ -269,7 +275,7 @@ server = server
     {
       name: "contact-only",
       description:
-        "Reveal LinkedIn contact info via Mawsool website. Requires api_key pasted in chat (website login email). Credits follow website reveal rules (email 5 / phone 20 only when billable). Also marks the profile as revealed and saves it to the user's 'saved leads' list (same as the website).",
+        "Reveal LinkedIn contact info via Apicool. Requires api_key pasted in chat (X-API-Key). fields e.g. 'email,phone'.",
       inputSchema: {
         api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
@@ -287,9 +293,8 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "contact" },
     },
-    async ({ api_key, url, fields, country }, extra) => {
-      const { data, isError } = await callWebsite(extra.authInfo, "contact", {
-        api_key,
+    async ({ api_key, url, fields, country }) => {
+      const { data, isError } = await contactMawsool(api_key, {
         url,
         fields,
         country,
@@ -301,7 +306,7 @@ server = server
     {
       name: "full-info-without-contact",
       description:
-        "LinkedIn profile organizational lookup via Mawsool website (no SaaS contact reveal charge). Requires api_key pasted in chat (website login email).",
+        "LinkedIn profile organizational lookup via Apicool (no contact reveal). Requires api_key pasted in chat (X-API-Key).",
       inputSchema: {
         api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
@@ -317,11 +322,8 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "profile" },
     },
-    async ({ api_key, url }, extra) => {
-      const { data, isError } = await callWebsite(extra.authInfo, "full-info", {
-        api_key,
-        url,
-      });
+    async ({ api_key, url }) => {
+      const { data, isError } = await fullInfoMawsool(api_key, url);
       return toolResult(data, isError);
     },
   )
@@ -329,7 +331,7 @@ server = server
     {
       name: "save-to-list",
       description:
-        "Save one or more LinkedIn profiles into a Mawsool website list (same as Add to list). Requires api_key pasted in chat (website login email). Does not run automatically on search — only when the user asks to save. Pass list_name (creates list if missing) or list_id. Copy first_name, last_name, title, company, and headline from search results when available so the website list columns fill in.",
+        "Not available on this standalone ChatGPT MCP (no website lists). Copy search/contact results instead.",
       inputSchema: {
         api_key: apiKeyField,
         list_name: z.string().optional().describe("Target list name, e.g. 'Outreach Q1'. Created if missing."),
@@ -369,14 +371,14 @@ server = server
       securitySchemes: toolSecurity,
       view: { component: "saved" },
     },
-    async ({ api_key, list_name, list_id, create_if_missing, profiles }, extra) => {
-      const { data, isError } = await callWebsite(extra.authInfo, "save-to-list", {
-        api_key,
-        list_name,
-        list_id,
-        create_if_missing,
-        profiles,
-      });
+    async () => {
+      return toolResult(
+        {
+          error:
+            "save-to-list is not available on the standalone ChatGPT MCP. It does not use the Mawsool website.",
+        },
+        true,
+      );
       return toolResult(data, isError);
     },
   );

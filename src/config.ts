@@ -41,19 +41,15 @@ export function getJwksUrl(): string {
   return `${issuer}/.well-known/jwks.json`;
 }
 
-export function getWebsiteUrl(): string {
-  return optional("WEBSITE_URL", "http://localhost:5000").replace(/\/+$/, "");
+export function getApicoolUrl(): string {
+  return optional("APICOOL_URL", "https://apicool.mawsool.tech").replace(/\/+$/, "");
 }
 
-export function getInternalSecret(): string {
-  if (!authRequired()) {
-    return optional("CHATGPT_MCP_INTERNAL_SECRET", "local-dev-secret");
-  }
-  return required("CHATGPT_MCP_INTERNAL_SECRET");
-}
-
-export function getDevUserEmail(): string {
-  return optional("DEV_USER_EMAIL").trim().toLowerCase();
+export function getSearchApiUrl(): string {
+  return optional(
+    "SEARCH_API_URL",
+    optional("MAWSOOL_SEARCH_API", "https://middleware-test.mawsool.tech"),
+  ).replace(/\/+$/, "");
 }
 
 export function authRequired(): boolean {
@@ -102,15 +98,15 @@ async function fetchIdpMetadata(): Promise<Record<string, unknown> | null> {
 export async function assertChatgptMcpConfig(): Promise<void> {
   getServerUrl();
   getMcpResourceUrl();
-  getWebsiteUrl();
-  getInternalSecret();
+  getApicoolUrl();
+  getSearchApiUrl();
   const issuer = getAuthIssuer();
   const audience = getAuthAudience();
   const resource = getMcpResourceUrl();
 
   if (!authRequired()) {
     console.log(
-      `[chatgpt-mcp] NO AUTH. website=${getWebsiteUrl()} resource=${resource} identity=api_key pasted in chat`,
+      `[chatgpt-mcp] NO AUTH. apicool=${getApicoolUrl()} search=${getSearchApiUrl()} resource=${resource} identity=api_key pasted in chat`,
     );
     return;
   }

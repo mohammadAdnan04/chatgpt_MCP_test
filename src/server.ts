@@ -2,13 +2,7 @@ import { McpServer } from "skybridge/server";
 import { z } from "zod";
 import { mcpAuthMetadataRouter } from "@modelcontextprotocol/sdk/server/auth/router.js";
 import { requireBearerAuth } from "@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js";
-import { verifyAccessToken } from "./auth.js";
-import {
-  fetchAccountCredits,
-  searchMawsool,
-  contactMawsool,
-  fullInfoMawsool,
-} from "./mawsool.js";
+import { verifyAccessToken, fetchAccountCredits, callWebsite } from "./auth.js";
 import {
   assertChatgptMcpConfig,
   authRequired,
@@ -66,13 +60,34 @@ function placeholderAsMetadata() {
   }
 }
 
+function mcpCorsAllowed(origin: string): boolean {
+  if (!origin) return true;
+  try {
+    const { hostname, protocol, port } = new URL(origin);
+    if (hostname === "chatgpt.com" || hostname.endsWith(".chatgpt.com")) return true;
+    if (hostname === "chatgpt-mcp.mawsool.tech") return true;
+    if (hostname === "test-mcp.mawsool.tech") return true;
+    if (
+      (hostname === "localhost" || hostname === "127.0.0.1") &&
+      (protocol === "http:" || protocol === "https:") &&
+      (port === "3000" || port === "")
+    ) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}
+
 function attachMcpCors(req: any, res: any, next: any) {
   const origin = String(req.headers.origin || "");
-  const allowOrigin = origin || "*";
-  res.setHeader("Access-Control-Allow-Origin", allowOrigin);
-  if (origin) {
+  if (origin && mcpCorsAllowed(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Vary", "Origin");
+  } else if (!origin) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
   }
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader(
@@ -98,64 +113,56 @@ function attachMcpCors(req: any, res: any, next: any) {
   next();
 }
 
-const toolSecurity = authRequired()
-  ? [{ type: "oauth2" as const, scopes: ["mcp"] }]
-  : [];
-
 let server = new McpServer(
   {
     name: "MawsoolContactServer",
     version: "1.0.0",
   },
   { capabilities: {} },
+).use((req: any, res: any, next: any) => {
+  if (
+    isDiscoveryGet(
+      req,
+      "/.well-known/oauth-protected-resource",
+      "/.well-known/oauth-protected-resource/mcp",
+      "/mcp/.well-known/oauth-protected-resource",
+    )
+  ) {
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(getProtectedResourceDoc());
+    return;
+  }
+  if (
+    isDiscoveryGet(
+      req,
+      "/.well-known/oauth-authorization-server",
+      "/.well-known/oauth-authorization-server/mcp",
+      "/mcp/.well-known/oauth-authorization-server",
+      "/.well-known/openid-configuration",
+      "/.well-known/openid-configuration/mcp",
+      "/mcp/.well-known/openid-configuration",
+    )
+  ) {
+    getAuthorizationServerMetadata()
+      .then((doc) => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).json(doc);
+      })
+      .catch((err) => {
+        console.error("[chatgpt-mcp] AS metadata fetch failed:", err?.message || err);
+        res.status(502).json({ error: "server_error" });
+      });
+    return;
+  }
+  next();
+});
+
+server = server.use(
+  mcpAuthMetadataRouter({
+    oauthMetadata: placeholderAsMetadata(),
+    resourceServerUrl: new URL(getMcpResourceUrl()),
+  }),
 );
-
-if (authRequired()) {
-  server = server.use((req: any, res: any, next: any) => {
-    if (
-      isDiscoveryGet(
-        req,
-        "/.well-known/oauth-protected-resource",
-        "/.well-known/oauth-protected-resource/mcp",
-        "/mcp/.well-known/oauth-protected-resource",
-      )
-    ) {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).json(getProtectedResourceDoc());
-      return;
-    }
-    if (
-      isDiscoveryGet(
-        req,
-        "/.well-known/oauth-authorization-server",
-        "/.well-known/oauth-authorization-server/mcp",
-        "/mcp/.well-known/oauth-authorization-server",
-        "/.well-known/openid-configuration",
-        "/.well-known/openid-configuration/mcp",
-        "/mcp/.well-known/openid-configuration",
-      )
-    ) {
-      getAuthorizationServerMetadata()
-        .then((doc) => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(200).json(doc);
-        })
-        .catch((err) => {
-          console.error("[chatgpt-mcp] AS metadata fetch failed:", err?.message || err);
-          res.status(502).json({ error: "server_error" });
-        });
-      return;
-    }
-    next();
-  });
-
-  server = server.use(
-    mcpAuthMetadataRouter({
-      oauthMetadata: placeholderAsMetadata(),
-      resourceServerUrl: new URL(getMcpResourceUrl()),
-    }),
-  );
-}
 
 // Copied from Mawsool-MCP: ChatGPT browser CORS + Accept + GET /mcp + /sse.
 server = server.use("/mcp", attachMcpCors);
@@ -183,27 +190,16 @@ if (authRequired()) {
     `[chatgpt-mcp] JWT auth ON. issuer=${getAuthIssuer()} resource=${getMcpResourceUrl()}`,
   );
 } else {
-  console.log(
-    `[chatgpt-mcp] NO AUTH. ChatGPT can connect without OAuth. Paste X-API-Key in chat (https://docs.mawsool.tech/).`,
-  );
+  console.log("[chatgpt-mcp] MCP_AUTH_REQUIRED=false");
 }
-
-const apiKeyField = z
-  .string()
-  .min(1)
-  .describe(
-    "Required. User pastes this in the ChatGPT chat — no login. Mawsool X-API-Key from https://docs.mawsool.tech/. Ask once if missing, then reuse it on every tool call. Never invent or guess it.",
-  );
 
 server = server
   .registerTool(
     {
       name: "check-credits",
       description:
-        "GET /credits — remaining Mawsool API credits for the pasted X-API-Key. See https://docs.mawsool.tech/",
-      inputSchema: {
-        api_key: apiKeyField,
-      },
+        "Returns Mawsool website account wallet credits for the signed-in user.",
+      inputSchema: {},
       outputSchema: z
         .object({
           creditsRemaining: z.number().optional(),
@@ -217,11 +213,11 @@ server = server
         idempotentHint: true,
         openWorldHint: false,
       },
-      securitySchemes: toolSecurity,
+      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
       view: { component: "credits" },
     },
-    async ({ api_key }) => {
-      const result = await fetchAccountCredits(api_key);
+    async (_input, extra) => {
+      const result = await fetchAccountCredits(extra.authInfo || null);
       const text =
         typeof result.creditsRemaining === "number"
           ? `You have ${result.creditsRemaining.toLocaleString()} Mawsool account credits remaining.`
@@ -237,16 +233,15 @@ server = server
     {
       name: "search",
       description:
-        "POST /search — people or companies (https://docs.mawsool.tech/). Requires X-API-Key. Max 50 results per page.",
+        "Search B2B profiles/companies via Mawsool website. Browse costs 0 wallet credits but uses the website daily search quota. Max 25 results per call (same as website page size). For more results, call again with page=2,3… — each page is one search.",
       inputSchema: {
-        api_key: apiKeyField,
         filters: z.record(z.string(), z.any()).describe("Search filters."),
         search_type: z.string().default("people").describe("'people' or 'companies'."),
-        page: z.number().default(1).describe("1-based page."),
+        page: z.number().default(1).describe("1-based page. Each page counts as one daily search."),
         limit: z
           .number()
           .default(10)
-          .describe("Results per page. Default 10, max 50 (Mawsool API)."),
+          .describe("Results per page. Capped at 25 (website page size). Do not request 100+ in one call."),
       },
       outputSchema: z.object({}).passthrough(),
       annotations: {
@@ -256,11 +251,11 @@ server = server
         idempotentHint: true,
         openWorldHint: true,
       },
-      securitySchemes: toolSecurity,
+      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
       view: { component: "search" },
     },
-    async ({ api_key, filters, search_type, page, limit }) => {
-      const { data, isError } = await searchMawsool(api_key, {
+    async ({ filters, search_type, page, limit }, extra) => {
+      const { data, isError } = await callWebsite(extra.authInfo, "search", {
         filters,
         search_type,
         page,
@@ -273,9 +268,8 @@ server = server
     {
       name: "contact-only",
       description:
-        "GET /contact — enrich a LinkedIn URL (email 5 credits, phone 20). Requires X-API-Key. fields e.g. 'email,phone'.",
+        "Reveal LinkedIn contact info via Mawsool website. Credits follow website reveal rules (email 5 / phone 20 only when billable). Also marks the profile as revealed and saves it to the user's 'saved leads' list (same as the website).",
       inputSchema: {
-        api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
         fields: z.string().min(1).describe("Comma-separated fields, e.g. 'email,phone'."),
         country: z.string().optional(),
@@ -288,11 +282,11 @@ server = server
         idempotentHint: false,
         openWorldHint: true,
       },
-      securitySchemes: toolSecurity,
+      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
       view: { component: "contact" },
     },
-    async ({ api_key, url, fields, country }) => {
-      const { data, isError } = await contactMawsool(api_key, {
+    async ({ url, fields, country }, extra) => {
+      const { data, isError } = await callWebsite(extra.authInfo, "contact", {
         url,
         fields,
         country,
@@ -304,9 +298,8 @@ server = server
     {
       name: "full-info-without-contact",
       description:
-        "GET /full-info — LinkedIn profile details without contact reveal. Requires X-API-Key.",
+        "LinkedIn profile organizational lookup via Mawsool website (no SaaS contact reveal charge).",
       inputSchema: {
-        api_key: apiKeyField,
         url: z.string().url().describe("LinkedIn profile URL."),
       },
       outputSchema: z.object({}).passthrough(),
@@ -317,11 +310,13 @@ server = server
         idempotentHint: true,
         openWorldHint: true,
       },
-      securitySchemes: toolSecurity,
+      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
       view: { component: "profile" },
     },
-    async ({ api_key, url }) => {
-      const { data, isError } = await fullInfoMawsool(api_key, url);
+    async ({ url }, extra) => {
+      const { data, isError } = await callWebsite(extra.authInfo, "full-info", {
+        url,
+      });
       return toolResult(data, isError);
     },
   )
@@ -329,9 +324,8 @@ server = server
     {
       name: "save-to-list",
       description:
-        "Not available on this standalone ChatGPT MCP (no website lists). Copy search/contact results instead.",
+        "Save one or more LinkedIn profiles into a Mawsool website list (same as Add to list). Does not run automatically on search — only when the user asks to save. Pass list_name (creates list if missing) or list_id. Copy first_name, last_name, title, company, and headline from search results when available so the website list columns fill in.",
       inputSchema: {
-        api_key: apiKeyField,
         list_name: z.string().optional().describe("Target list name, e.g. 'Outreach Q1'. Created if missing."),
         list_id: z.string().optional().describe("Existing Mawsool list id (if known)."),
         create_if_missing: z.boolean().optional().describe("Create list_name when it does not exist (default true)."),
@@ -366,17 +360,17 @@ server = server
         idempotentHint: false,
         openWorldHint: false,
       },
-      securitySchemes: toolSecurity,
+      securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
       view: { component: "saved" },
     },
-    async () => {
-      return toolResult(
-        {
-          error:
-            "save-to-list is not available on the standalone ChatGPT MCP. It does not use the Mawsool website.",
-        },
-        true,
-      );
+    async ({ list_name, list_id, create_if_missing, profiles }, extra) => {
+      const { data, isError } = await callWebsite(extra.authInfo, "save-to-list", {
+        list_name,
+        list_id,
+        create_if_missing,
+        profiles,
+      });
+      return toolResult(data, isError);
     },
   );
 

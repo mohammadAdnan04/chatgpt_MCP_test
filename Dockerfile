@@ -4,14 +4,12 @@ FROM node:24-slim AS build
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-# Coolify often injects NODE_ENV=production at build time, which makes
-# npm skip vite/tailwind (devDependencies). Force them in for skybridge build.
 RUN --mount=type=cache,target=/root/.npm \
-    if [ -f package-lock.json ]; then npm ci --include=dev; else npm install; fi
+    if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
+ENV NODE_ENV=production
 COPY . .
-RUN npm run build
-RUN npm prune --omit=dev
+RUN npm run build && npm prune --omit=dev
 
 FROM node:24-slim AS runtime
 WORKDIR /app

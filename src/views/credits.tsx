@@ -7,7 +7,7 @@ export default function Credits() {
     typeof output?.creditsRemaining === "number" ? output.creditsRemaining : null;
 
   return (
-    <Shell title="Account credits" subtitle="GET /credits from the Mawsool API.">
+    <Shell title="Account credits" subtitle="Wallet balance from the Mawsool website.">
       {output?.error ? (
         <p className="text-sm text-destructive">{String(output.error)}</p>
       ) : (

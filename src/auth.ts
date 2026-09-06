@@ -4,9 +4,25 @@ import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import {
   getAuthAudience,
   getAuthIssuer,
+  getDevUserEmail,
+  getInternalSecret,
   getJwksUrl,
   getMcpResourceUrl,
+  getWebsiteUrl,
 } from "./config.js";
+
+function resolveAuth(auth: AuthInfo | null | undefined): AuthInfo | null | undefined {
+  const existing = auth?.extra?.email;
+  if (typeof existing === "string" && existing.includes("@")) return auth;
+  const email = getDevUserEmail();
+  if (!email) return auth;
+  return {
+    token: auth?.token || "local-dev",
+    clientId: auth?.clientId || "local-devtools",
+    scopes: auth?.scopes?.length ? auth.scopes : ["mcp"],
+    extra: { ...(auth?.extra || {}), email, sub: String(auth?.extra?.sub || "local-dev") },
+  };
+}
 
 let jwks: JWTVerifyGetKey | null = null;
 
@@ -78,4 +94,63 @@ export async function verifyAccessToken(token: string): Promise<AuthInfo> {
       aud: payload.aud,
     },
   };
+}
+
+async function websiteRequest(
+  auth: AuthInfo | null | undefined,
+  method: string,
+  path: string,
+  body?: Record<string, unknown>,
+): Promise<{ data: any; isError: boolean }> {
+  const resolved = resolveAuth(auth);
+  const email = resolved?.extra?.email as string | undefined;
+  if (!email) {
+    return { data: { error: "Not authenticated" }, isError: true };
+  }
+
+  try {
+    const response = await fetch(`${getWebsiteUrl()}${path}`, {
+      method,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Mawsool-Internal-Secret": getInternalSecret(),
+        "X-Mawsool-User-Email": email,
+      },
+      body: method === "GET" ? undefined : JSON.stringify(body || {}),
+    });
+    const data = await response.json().catch(() => ({
+      error: `Invalid response (${response.status})`,
+    }));
+    if (!response.ok) {
+      return {
+        data: {
+          ...data,
+          error:
+            data.error_description ||
+            data.error ||
+            data.message ||
+            `Request failed (${response.status})`,
+        },
+        isError: true,
+      };
+    }
+    return { data, isError: !!data.error };
+  } catch (e: any) {
+    return { data: { error: e.message || "Website request failed" }, isError: true };
+  }
+}
+
+export async function fetchAccountCredits(auth?: AuthInfo | null) {
+  const { data, isError } = await websiteRequest(auth, "GET", "/api/internal/mcp/credits");
+  if (isError) return { error: data.error || "Failed to load credits" };
+  return data;
+}
+
+export async function callWebsite(
+  auth: AuthInfo | null | undefined,
+  path: string,
+  body?: Record<string, unknown>,
+): Promise<{ data: any; isError: boolean }> {
+  return websiteRequest(auth, "POST", `/api/internal/mcp/${path}`, body);
 }

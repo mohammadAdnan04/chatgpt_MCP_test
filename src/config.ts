@@ -41,10 +41,23 @@ export function getJwksUrl(): string {
   return `${issuer}/.well-known/jwks.json`;
 }
 
+export function getWebsiteUrl(): string {
+  return optional("WEBSITE_URL", "http://localhost:5000").replace(/\/+$/, "");
+}
+
+export function getInternalSecret(): string {
+  if (!authRequired()) {
+    return optional("CHATGPT_MCP_INTERNAL_SECRET", "local-dev-secret");
+  }
+  return required("CHATGPT_MCP_INTERNAL_SECRET");
+}
+
+export function getDevUserEmail(): string {
+  return optional("DEV_USER_EMAIL").trim().toLowerCase();
+}
+
 export function authRequired(): boolean {
-  return !["false", "0", "no", "off"].includes(
-    String(process.env.MCP_AUTH_REQUIRED || "true").trim().toLowerCase(),
-  );
+  return String(process.env.MCP_AUTH_REQUIRED || "true").toLowerCase() !== "false";
 }
 
 export function getProtectedResourceDoc() {
@@ -87,13 +100,15 @@ async function fetchIdpMetadata(): Promise<Record<string, unknown> | null> {
 export async function assertChatgptMcpConfig(): Promise<void> {
   getServerUrl();
   getMcpResourceUrl();
+  getWebsiteUrl();
+  getInternalSecret();
   const issuer = getAuthIssuer();
   const audience = getAuthAudience();
   const resource = getMcpResourceUrl();
 
   if (!authRequired()) {
     console.log(
-      `[chatgpt-mcp] NO AUTH. Mawsool API https://docs.mawsool.tech/ — paste X-API-Key in chat. resource=${resource}`,
+      `[chatgpt-mcp] LOCAL MODE. website=${getWebsiteUrl()} resource=${resource} email=${getDevUserEmail() || "(set DEV_USER_EMAIL)"}`,
     );
     return;
   }

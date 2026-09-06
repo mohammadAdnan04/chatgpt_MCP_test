@@ -1,10 +1,19 @@
 # ChatGPT MCP (Mawsool)
 
-Standalone ChatGPT connector. No website, no OAuth. Users paste a Mawsool **X-API-Key** in chat.
+ChatGPT connector with **Auth0 login**. Claude stays on `mcp.mawsool.tech`.
 
-Tools match [docs.mawsool.tech](https://docs.mawsool.tech/): `GET /credits`, `POST /search`, `GET /contact`, `GET /full-info`.
+ChatGPT is the OAuth client. Auth0 issues the JWT. This MCP verifies it, then calls the Mawsool website as that user:
 
-Do not deploy this over Claude / `mcp.mawsool.tech`.
+```
+X-Mawsool-Internal-Secret
+X-Mawsool-User-Email: <email from Auth0>
+```
+
+→ `GET/POST {WEBSITE_URL}/api/internal/mcp/*`
+
+Do **not** paste an X-API-Key in chat. Do **not** send ChatGPT to backbeta `/oauth/token`.
+
+The website must be [mena-site september](https://github.com/mawsool/mena-site-/tree/september) (or equivalent) with `/api/internal/mcp` and the same `CHATGPT_MCP_INTERNAL_SECRET`.
 
 ## Coolify
 
@@ -16,24 +25,41 @@ Do not deploy this over Claude / `mcp.mawsool.tech`.
 ```
 NODE_ENV=production
 PORT=3000
+MCP_AUTH_REQUIRED=true
 SERVER_URL=https://test-mcp.mawsool.tech
 MCP_RESOURCE_URL=https://test-mcp.mawsool.tech/mcp
-MCP_AUTH_REQUIRED=false
+AUTH_ISSUER=https://YOUR_TENANT.auth0.com/
+AUTH_AUDIENCE=https://test-mcp.mawsool.tech/mcp
+WEBSITE_URL=https://backbeta.mawsool.tech
+CHATGPT_MCP_INTERNAL_SECRET=<same hex as website back_end>
 ```
-
-Remove `WEBSITE_URL`, `APICOOL_URL`, `SEARCH_API_URL`, `CHATGPT_MCP_INTERNAL_SECRET`, `AUTH_ISSUER`.
 
 Uncheck **Available at Buildtime** for `NODE_ENV`.
 
-ChatGPT connector: `https://test-mcp.mawsool.tech/mcp` — no authentication.
+`AUTH_ISSUER` must equal Auth0 `issuer` exactly (usually a trailing `/`). Auth0 API identifier must be `https://test-mcp.mawsool.tech/mcp`. Full tenant checklist: [AUTH0.md](AUTH0.md).
+
+ChatGPT connector: `https://test-mcp.mawsool.tech/mcp`
+
+Do not click Connect until:
+
+```bash
+node scripts/check-discovery.mjs https://test-mcp.mawsool.tech
+```
+
+prints **GO**. If `token_endpoint` contains `backbeta`, stop.
+
+Then Auth0 → Import from URL: `https://chatgpt.com/oauth/{callback_id}/client.json`.
 
 ## Local
 
 ```bash
 cp .env.example .env
+# set DEV_USER_EMAIL to a real Mawsool User.email
+# website API on :5000 with the same CHATGPT_MCP_INTERNAL_SECRET
 npm install
 npm run dev
 ```
 
 - DevTools: http://localhost:3000
 - MCP: http://localhost:3000/mcp
+- Health: http://localhost:3000/health

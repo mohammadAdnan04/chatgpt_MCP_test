@@ -1,7 +1,7 @@
 # ChatGPT MCP — go / no-go (Auth0)
 
 Claude stays on `https://mcp.mawsool.tech` and `https://backbeta.mawsool.tech/oauth/*`.
-ChatGPT uses **only** `https://chatgpt-mcp.mawsool.tech/mcp`.
+ChatGPT uses **only** `https://test-mcp.mawsool.tech/mcp`.
 ChatGPT’s token POST goes to **Auth0**, never to backbeta.
 
 Do **not** click Connect in ChatGPT until the proof command prints `GO`.
@@ -12,7 +12,7 @@ This is OpenAI’s published ChatGPT OAuth contract plus Auth0’s published MCP
 
 1. Finish Auth0 (section A) until every box is done.
 2. Deploy `chatgpt-mcp` + backend secret (section B).
-3. Run `node scripts/check-discovery.mjs https://chatgpt-mcp.mawsool.tech` until it prints **GO**.
+3. Run `node scripts/check-discovery.mjs https://test-mcp.mawsool.tech` until it prints **GO**.
 4. In ChatGPT, create the connector so the page shows the callback id — **do not Connect yet**.
 5. Auth0 → Applications → Create → **Import from URL**:
    `https://chatgpt.com/oauth/{callback_id}/client.json`
@@ -36,7 +36,7 @@ Enable all three:
 
 ### API
 
-- Identifier (audience): `https://chatgpt-mcp.mawsool.tech/mcp`  
+- Identifier (audience): `https://test-mcp.mawsool.tech/mcp`  
   Must be this exact URL. ChatGPT sends it as `resource`; Auth0 puts it in `aud`.
 - Signing: **RS256**
 - Application Access Policy: allow **user-delegated** access for third-party / CIMD apps  
@@ -82,12 +82,12 @@ ChatGPT’s `client.json` advertises `none` and `private_key_jwt`. Import-from-U
 
 ## B. Coolify
 
-### New app (not Mawsool-MCP / Claude)
+### New app (not Mawsool-MCP)
 
 - Base directory: **empty** (this repo is the MCP at the root)
 - Dockerfile: `Dockerfile`
 - Port: `3000`
-- Domain: `chatgpt-mcp.mawsool.tech`
+- Domain: `test-mcp.mawsool.tech`
 
 Generate the shared secret once:
 
@@ -96,11 +96,11 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ```
-SERVER_URL=https://chatgpt-mcp.mawsool.tech
-MCP_RESOURCE_URL=https://chatgpt-mcp.mawsool.tech/mcp
+SERVER_URL=https://test-mcp.mawsool.tech
+MCP_RESOURCE_URL=https://test-mcp.mawsool.tech/mcp
 MCP_AUTH_REQUIRED=true
 AUTH_ISSUER=https://YOUR_TENANT.auth0.com/
-AUTH_AUDIENCE=https://chatgpt-mcp.mawsool.tech/mcp
+AUTH_AUDIENCE=https://test-mcp.mawsool.tech/mcp
 WEBSITE_URL=https://backbeta.mawsool.tech
 CHATGPT_MCP_INTERNAL_SECRET=<long random string>
 ```
@@ -118,12 +118,12 @@ Deploy backend only when it already includes `/api/internal/mcp`. Do not change 
 ## C. Proof command (hard gate)
 
 ```bash
-node chatgpt-mcp/scripts/check-discovery.mjs https://chatgpt-mcp.mawsool.tech
+node scripts/check-discovery.mjs https://test-mcp.mawsool.tech
 ```
 
 **GO** means all of these are true at once:
 
-- PRM `resource` is `https://chatgpt-mcp.mawsool.tech/mcp`
+- PRM `resource` is `https://test-mcp.mawsool.tech/mcp`
 - PRM `authorization_servers[0]` equals Auth0 `issuer` exactly
 - Auth0 `token_endpoint` is Auth0, not backbeta
 - Auth0 advertises PKCE `S256`
@@ -142,7 +142,7 @@ curl -sS https://backbeta.mawsool.tech/.well-known/oauth-authorization-server
 ## D. ChatGPT (only after GO)
 
 1. Developer Mode on
-2. Custom connector URL: `https://chatgpt-mcp.mawsool.tech/mcp`
+2. Custom connector URL: `https://test-mcp.mawsool.tech/mcp`
 3. Copy callback id → finish Auth0 Import from URL + API grant if not already done
 4. Connect and sign in
 5. Ask: check my Mawsool credits

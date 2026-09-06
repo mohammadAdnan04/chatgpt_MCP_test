@@ -3,7 +3,7 @@
  * Hard GO / NO-GO for ChatGPT MCP discovery.
  * Do not click Connect in ChatGPT unless this prints GO.
  *
- * Usage: node scripts/check-discovery.mjs https://chatgpt-mcp.mawsool.tech
+ * Usage: node scripts/check-discovery.mjs https://test-mcp.mawsool.tech
  */
 const base = (process.argv[2] || "http://localhost:3000").replace(/\/+$/, "");
 const expectedResource = `${base}/mcp`;

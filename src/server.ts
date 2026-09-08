@@ -23,6 +23,14 @@ function toolResult(data: any, isError: boolean) {
   };
 }
 
+/** ChatGPT widgets cannot call a tool unless it is marked accessible from the iframe. */
+function widgetMeta() {
+  return {
+    "openai/widgetAccessible": true,
+    ui: { visibility: ["model", "app"] as Array<"model" | "app"> },
+  };
+}
+
 function isDiscoveryGet(req: any, ...paths: string[]) {
   if (req.method !== "GET") return false;
   const p = String(req.path || "");
@@ -214,6 +222,7 @@ server = server
         openWorldHint: false,
       },
       securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      _meta: widgetMeta(),
       view: { component: "credits" },
     },
     async (_input, extra) => {
@@ -252,6 +261,7 @@ server = server
         openWorldHint: true,
       },
       securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      _meta: widgetMeta(),
       view: { component: "search" },
     },
     async ({ filters, search_type, page, limit }, extra) => {
@@ -283,6 +293,7 @@ server = server
         openWorldHint: true,
       },
       securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      _meta: widgetMeta(),
       view: { component: "contact" },
     },
     async ({ url, fields, country }, extra) => {
@@ -311,6 +322,7 @@ server = server
         openWorldHint: true,
       },
       securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      _meta: widgetMeta(),
       view: { component: "profile" },
     },
     async ({ url }, extra) => {
@@ -361,6 +373,7 @@ server = server
         openWorldHint: false,
       },
       securitySchemes: [{ type: "oauth2", scopes: ["mcp"] }],
+      _meta: widgetMeta(),
       view: { component: "saved" },
     },
     async ({ list_name, list_id, create_if_missing, profiles }, extra) => {

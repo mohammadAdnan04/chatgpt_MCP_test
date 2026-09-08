@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useViewState } from "skybridge/web";
 import Shell from "./components/shell.js";
-import { useCallTool, useToolInfo } from "../helpers.js";
+import { callHostTool, useCallTool, useToolInfo } from "../helpers.js";
 
 type Person = {
   url?: string;
+  linkedin_url?: string;
+  public_profile_url?: string;
+  profile_url?: string;
+  public_identifier?: string;
   name?: string;
   first_name?: string;
   last_name?: string;
@@ -28,40 +32,114 @@ function displayName(row: Person) {
   );
 }
 
+function profileUrl(row: Person): string {
+  const raw =
+    row.url ||
+    row.linkedin_url ||
+    row.public_profile_url ||
+    row.profile_url ||
+    "";
+  const trimmed = String(raw).trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  const id = String(row.public_identifier || trimmed).replace(/^\/+|\/+$/g, "");
+  if (id && !id.includes(" ")) return `https://www.linkedin.com/in/${id}`;
+  return "";
+}
+
+function errorText(err: unknown): string {
+  if (err instanceof Error && err.message) return err.message;
+  if (typeof err === "string" && err) return err;
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return "Tool call failed";
+  }
+}
+
 export default function Search() {
   const { output, input } = useToolInfo();
-  const { callTool: reveal, isPending: revealing } = useCallTool("contact-only");
-  const { callTool: save, isPending: saving } = useCallTool("save-to-list");
+  const revealTool = useCallTool("contact-only");
+  const saveTool = useCallTool("save-to-list");
   const [ui, setUi] = useViewState({ listName: "Outreach from ChatGPT" });
   const [notice, setNotice] = useState("");
+  const [busy, setBusy] = useState<"reveal" | "save" | "">("");
   const rows = rowsFrom(output as Record<string, unknown> | undefined);
 
+  async function runTool(name: string, args: Record<string, unknown>, fallback: () => Promise<any>) {
+    try {
+      return await callHostTool(name, args);
+    } catch (first) {
+      try {
+        return await fallback();
+      } catch (second) {
+        throw second || first;
+      }
+    }
+  }
+
   async function onReveal(row: Person) {
-    if (!row.url) return;
-    setNotice("");
-    const result: any = await reveal({ url: row.url, fields: "email,phone" });
-    setNotice(result.isError ? "Reveal failed" : "Reveal requested");
+    const url = profileUrl(row);
+    if (!url) {
+      setNotice("This row has no LinkedIn URL, so Reveal cannot run.");
+      return;
+    }
+    setNotice("Revealing contact…");
+    setBusy("reveal");
+    try {
+      const result: any = await runTool(
+        "contact-only",
+        { url, fields: "email,phone" },
+        () => revealTool.callToolAsync({ url, fields: "email,phone" } as any),
+      );
+      setNotice(
+        result?.isError
+          ? String(result?.structuredContent?.error || result?.error || "Reveal failed")
+          : "Reveal finished. Check the new contact card in this chat.",
+      );
+    } catch (err) {
+      setNotice(`Reveal failed: ${errorText(err)}`);
+    } finally {
+      setBusy("");
+    }
   }
 
   async function onSave(row: Person) {
-    if (!row.url) return;
-    setNotice("");
-    const result: any = await save({
-      list_name: ui.listName,
-      create_if_missing: true,
-      profiles: [
-        {
-          url: row.url,
-          name: displayName(row),
-          first_name: row.first_name,
-          last_name: row.last_name,
-          title: row.title,
-          company: row.company,
-          headline: row.headline,
-        },
-      ],
-    });
-    setNotice(result.isError ? "Save failed" : `Saved to ${ui.listName}`);
+    const url = profileUrl(row);
+    if (!url) {
+      setNotice("This row has no LinkedIn URL, so Save cannot run.");
+      return;
+    }
+    setNotice("Saving to list…");
+    setBusy("save");
+    try {
+      const payload = {
+        list_name: ui.listName,
+        create_if_missing: true,
+        profiles: [
+          {
+            url,
+            name: displayName(row),
+            first_name: row.first_name,
+            last_name: row.last_name,
+            title: row.title,
+            company: row.company,
+            headline: row.headline,
+          },
+        ],
+      };
+      const result: any = await runTool("save-to-list", payload, () =>
+        saveTool.callToolAsync(payload as any),
+      );
+      setNotice(
+        result?.isError
+          ? String(result?.structuredContent?.error || result?.error || "Save failed")
+          : `Saved to ${ui.listName}`,
+      );
+    } catch (err) {
+      setNotice(`Save failed: ${errorText(err)}`);
+    } finally {
+      setBusy("");
+    }
   }
 
   return (
@@ -90,37 +168,40 @@ export default function Search() {
         {rows.length === 0 && !output?.error ? (
           <p className="text-sm text-muted-foreground">No rows in this page.</p>
         ) : null}
-        {rows.map((row, i) => (
-          <div
-            key={row.url || String(i)}
-            className="flex flex-col gap-2 rounded border border-border p-3 md:flex-row md:items-center md:justify-between"
-          >
-            <div className="min-w-0">
-              <p className="truncate font-medium">{displayName(row)}</p>
-              <p className="truncate text-sm text-muted-foreground">
-                {[row.title, row.company].filter(Boolean).join(" · ")}
-              </p>
+        {rows.map((row, i) => {
+          const url = profileUrl(row);
+          return (
+            <div
+              key={url || String(i)}
+              className="flex flex-col gap-2 rounded border border-border p-3 md:flex-row md:items-center md:justify-between"
+            >
+              <div className="min-w-0">
+                <p className="truncate font-medium">{displayName(row)}</p>
+                <p className="truncate text-sm text-muted-foreground">
+                  {[row.title, row.company].filter(Boolean).join(" · ")}
+                </p>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50"
+                  disabled={!url || busy === "reveal"}
+                  onClick={() => onReveal(row)}
+                >
+                  {busy === "reveal" ? "Revealing…" : "Reveal"}
+                </button>
+                <button
+                  type="button"
+                  className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground disabled:opacity-50"
+                  disabled={!url || busy === "save"}
+                  onClick={() => onSave(row)}
+                >
+                  {busy === "save" ? "Saving…" : "Save"}
+                </button>
+              </div>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button
-                type="button"
-                className="rounded border border-border px-3 py-1 text-sm"
-                disabled={!row.url || revealing}
-                onClick={() => onReveal(row)}
-              >
-                Reveal
-              </button>
-              <button
-                type="button"
-                className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground"
-                disabled={!row.url || saving}
-                onClick={() => onSave(row)}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </Shell>
   );

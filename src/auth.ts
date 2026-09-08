@@ -185,23 +185,35 @@ export async function verifyAccessToken(token: string): Promise<AuthInfo> {
   };
 }
 
+function websiteMcpUrl(toolPath: string, useChatgptJwt: boolean): string {
+  const suffix = String(toolPath || "").replace(/^\/+/, "");
+  // ChatGPT JWT is stored in OAuthToken at /chatgpt-oauth/token. Same mcpProxy
+  // handlers as Claude: /api/oauth/mcp/* + Authorization Bearer.
+  // Do not call /api/internal/mcp from Coolify — Cloudflare WAF 403s that path
+  // (and X-Mawsool-* headers), which broke every ChatGPT tool at once.
+  const prefix = useChatgptJwt ? "/api/oauth/mcp" : "/api/internal/mcp";
+  return `${getWebsiteUrl()}${prefix}/${suffix}`;
+}
+
 async function websiteRequest(
   auth: AuthInfo | null | undefined,
   method: string,
-  path: string,
+  toolPath: string,
   body?: Record<string, unknown>,
 ): Promise<{ data: any; isError: boolean }> {
   const resolved = resolveAuth(auth);
+  const token = resolved?.token;
+  const useChatgptJwt = Boolean(token && token !== "local-dev");
+
   let email = resolved?.extra?.email as string | undefined;
-  if ((!email || !email.includes("@")) && resolved?.token && resolved.token !== "local-dev") {
-    email = (await emailFromUserinfo(resolved.token)) || undefined;
-    if (email && resolved.extra) resolved.extra.email = email;
+  if ((!email || !email.includes("@")) && useChatgptJwt) {
+    email = (await emailFromUserinfo(token as string)) || undefined;
+    if (email && resolved?.extra) resolved.extra.email = email;
   }
-  if (!email || !email.includes("@")) {
+  if (!useChatgptJwt && (!email || !email.includes("@"))) {
     return {
       data: {
-        error:
-          "Auth0 token has no email. In Auth0 Actions → Login add: api.accessToken.setCustomClaim(\"https://mawsool.tech/email\", event.user.email)",
+        error: "No Mawsool user on this session. Reconnect the ChatGPT plugin, or set DEV_USER_EMAIL locally.",
       },
       isError: true,
     };
@@ -211,13 +223,17 @@ async function websiteRequest(
     const headers: Record<string, string> = {
       Accept: "application/json",
       "User-Agent": "MawsoolChatGPTMCP/1.0",
-      "X-Mawsool-Internal-Secret": getInternalSecret(),
-      "X-Mawsool-User-Email": email,
     };
+    if (useChatgptJwt) {
+      headers.Authorization = `Bearer ${token}`;
+    } else {
+      headers["X-Mawsool-Internal-Secret"] = getInternalSecret();
+      headers["X-Mawsool-User-Email"] = email as string;
+    }
     if (method !== "GET") {
       headers["Content-Type"] = "application/json";
     }
-    const response = await fetch(`${getWebsiteUrl()}${path}`, {
+    const response = await fetch(websiteMcpUrl(toolPath, useChatgptJwt), {
       method,
       headers,
       body: method === "GET" ? undefined : JSON.stringify(body || {}),
@@ -252,7 +268,7 @@ async function websiteRequest(
 }
 
 export async function fetchAccountCredits(auth?: AuthInfo | null) {
-  const { data, isError } = await websiteRequest(auth, "GET", "/api/internal/mcp/credits");
+  const { data, isError } = await websiteRequest(auth, "GET", "credits");
   if (isError) return { error: data.error || "Failed to load credits" };
   return data;
 }
@@ -262,5 +278,5 @@ export async function callWebsite(
   path: string,
   body?: Record<string, unknown>,
 ): Promise<{ data: any; isError: boolean }> {
-  return websiteRequest(auth, "POST", `/api/internal/mcp/${path}`, body);
+  return websiteRequest(auth, "POST", path, body);
 }

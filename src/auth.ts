@@ -30,12 +30,41 @@ let jwks: JWTVerifyGetKey | null = null;
 let jwksLoadedAt = 0;
 const JWKS_TTL_MS = 60_000;
 
+/** Public key currently served by backtest. Coolify cannot fetch it (Cloudflare 403). */
+const FALLBACK_JWKS = {
+  keys: [
+    {
+      kty: "RSA",
+      n: "uCvIw9bcLY2_noXVjKccnK_jEabW2Tal4n7IOA1jLkO_onuRSoZAi8vaEqlyHOMujV3psGlZBIxEmK-Jcy8irYT1OYTrncoz6Upunl8SHbgLbeZHGB3APiwjL-FKmviqjCAoP7bNyJy2k2dOdxr9iCQ7X_anJtqdymI01Em64br-w2jN-8uNIDSW_ERVoudBNWZX0Lvzxtkc8QrKrJX3SYzEHcOunccRxb3nhjxOTDM35Pj_qx1P0onasMq_XAsvr0VygJqVvS80cZxQ_3yatqiin7PcFhQnAKCaXmG6UrTXBLUenJ3ewDe_QkPAPYvykU76ikq_fg6KyYHl3ueyeQ",
+      e: "AQAB",
+      kid: "8b6c79dce41f130a",
+      use: "sig",
+      alg: "RS256",
+    },
+  ],
+};
+
 function jwksFromDocument(doc: { keys?: unknown[] }, source: string): JWTVerifyGetKey | null {
   if (!doc?.keys?.length) return null;
   jwks = createLocalJWKSet(doc as { keys: never[] });
   jwksLoadedAt = Date.now();
   console.log("[chatgpt-mcp] JWKS loaded", source);
   return jwks;
+}
+
+async function fetchJwksUrl(url: string): Promise<JWTVerifyGetKey | null> {
+  const res = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      "User-Agent": "MawsoolChatGPTMCP/1.0",
+    },
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) {
+    console.warn("[chatgpt-mcp] JWKS", res.status, url);
+    return null;
+  }
+  return jwksFromDocument((await res.json()) as { keys?: unknown[] }, url);
 }
 
 async function loadJwks(force = false): Promise<JWTVerifyGetKey> {
@@ -51,28 +80,37 @@ async function loadJwks(force = false): Promise<JWTVerifyGetKey> {
     }
   }
 
+  const website = getWebsiteUrl().replace(/\/+$/, "");
+  const issuer = getAuthIssuer().replace(/\/+$/, "");
   const urls = [
     ...new Set(
-      [getJwksInternalUrl(), getJwksUrl(), `${getWebsiteUrl()}/chatgpt-oauth/.well-known/jwks.json`].filter(Boolean),
+      [
+        getJwksInternalUrl(),
+        getJwksUrl(),
+        `${issuer}/.well-known/jwks.json`,
+        `${issuer}/jwks.json`,
+        `${website}/chatgpt-oauth/.well-known/jwks.json`,
+        `${website}/chatgpt-oauth/jwks.json`,
+      ].filter(Boolean),
     ),
   ];
   for (const url of urls) {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        const res = await fetch(url, {
-          headers: { accept: "application/json" },
-          signal: AbortSignal.timeout(15000),
-        });
-        if (!res.ok) {
-          console.warn("[chatgpt-mcp] JWKS", res.status, url);
-          continue;
-        }
-        const fromUrl = jwksFromDocument((await res.json()) as { keys?: unknown[] }, url);
+        const fromUrl = await fetchJwksUrl(url);
         if (fromUrl) return fromUrl;
       } catch (err: any) {
         console.warn("[chatgpt-mcp] JWKS fetch failed", url, err?.message || err);
       }
     }
+  }
+
+  const fallback = jwksFromDocument(FALLBACK_JWKS, "bundled-fallback");
+  if (fallback) {
+    console.warn(
+      "[chatgpt-mcp] Remote JWKS returned 403/failed (Cloudflare blocking Coolify). Using bundled public key. Set AUTH_JWKS_JSON or AUTH_JWKS_INTERNAL_URL, and persist CHATGPT_OAUTH_PRIVATE_KEY on backtest so this key does not go stale after a website restart.",
+    );
+    return fallback;
   }
   if (jwks) return jwks;
   throw new InvalidTokenError("cannot load Mawsool JWKS");

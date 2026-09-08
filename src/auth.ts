@@ -1,4 +1,4 @@
-import { createRemoteJWKSet, decodeJwt, jwtVerify, type JWTVerifyGetKey } from "jose";
+import { createLocalJWKSet, decodeJwt, jwtVerify, type JWTVerifyGetKey } from "jose";
 import { InvalidTokenError } from "@modelcontextprotocol/sdk/server/auth/errors.js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import {
@@ -26,11 +26,31 @@ function resolveAuth(auth: AuthInfo | null | undefined): AuthInfo | null | undef
 
 let jwks: JWTVerifyGetKey | null = null;
 
-function getJwks(): JWTVerifyGetKey {
-  if (!jwks) {
-    jwks = createRemoteJWKSet(new URL(getJwksUrl()));
+async function loadJwks(): Promise<JWTVerifyGetKey> {
+  if (jwks) return jwks;
+  const urls = [...new Set([getJwksUrl(), `${getWebsiteUrl()}/chatgpt-oauth/.well-known/jwks.json`])];
+  for (const url of urls) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(url, {
+          headers: { accept: "application/json" },
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!res.ok) {
+          console.warn("[chatgpt-mcp] JWKS", res.status, url);
+          continue;
+        }
+        const doc = (await res.json()) as { keys?: unknown[] };
+        if (!doc?.keys?.length) continue;
+        jwks = createLocalJWKSet(doc as { keys: never[] });
+        console.log("[chatgpt-mcp] JWKS loaded", url);
+        return jwks;
+      } catch (err: any) {
+        console.warn("[chatgpt-mcp] JWKS fetch failed", url, err?.message || err);
+      }
+    }
   }
-  return jwks;
+  throw new InvalidTokenError("cannot load Mawsool JWKS");
 }
 
 function issuerCandidates(issuer: string): string[] {
@@ -92,15 +112,16 @@ async function emailFromUserinfo(token: string): Promise<string | null> {
 async function verifyJwt(token: string) {
   const issuer = getAuthIssuer();
   const audiences = acceptedAudiences();
+  const keyset = await loadJwks();
   try {
-    return await jwtVerify(token, getJwks(), {
+    return await jwtVerify(token, keyset, {
       issuer: issuerCandidates(issuer),
       audience: audiences,
       clockTolerance: 5,
     });
   } catch (strictErr: any) {
     try {
-      const verified = await jwtVerify(token, getJwks(), {
+      const verified = await jwtVerify(token, keyset, {
         issuer: issuerCandidates(issuer),
         clockTolerance: 5,
       });
@@ -187,19 +208,30 @@ async function websiteRequest(
   }
 
   try {
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+      "User-Agent": "MawsoolChatGPTMCP/1.0",
+      "X-Mawsool-Internal-Secret": getInternalSecret(),
+      "X-Mawsool-User-Email": email,
+    };
+    if (method !== "GET") {
+      headers["Content-Type"] = "application/json";
+    }
     const response = await fetch(`${getWebsiteUrl()}${path}`, {
       method,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-Mawsool-Internal-Secret": getInternalSecret(),
-        "X-Mawsool-User-Email": email,
-      },
+      headers,
       body: method === "GET" ? undefined : JSON.stringify(body || {}),
     });
-    const data = await response.json().catch(() => ({
-      error: `Invalid response (${response.status})`,
-    }));
+    const raw = await response.text();
+    let data: any = null;
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch {
+      data = {
+        error: `Invalid response (${response.status})`,
+        error_description: raw.slice(0, 180).replace(/\s+/g, " "),
+      };
+    }
     if (!response.ok) {
       return {
         data: {

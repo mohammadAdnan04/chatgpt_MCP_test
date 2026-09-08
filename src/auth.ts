@@ -6,6 +6,8 @@ import {
   getAuthIssuer,
   getDevUserEmail,
   getInternalSecret,
+  getJwksInternalUrl,
+  getJwksJson,
   getJwksUrl,
   getMcpResourceUrl,
   getWebsiteUrl,
@@ -25,10 +27,35 @@ function resolveAuth(auth: AuthInfo | null | undefined): AuthInfo | null | undef
 }
 
 let jwks: JWTVerifyGetKey | null = null;
+let jwksLoadedAt = 0;
+const JWKS_TTL_MS = 60_000;
 
-async function loadJwks(): Promise<JWTVerifyGetKey> {
-  if (jwks) return jwks;
-  const urls = [...new Set([getJwksUrl(), `${getWebsiteUrl()}/chatgpt-oauth/.well-known/jwks.json`])];
+function jwksFromDocument(doc: { keys?: unknown[] }, source: string): JWTVerifyGetKey | null {
+  if (!doc?.keys?.length) return null;
+  jwks = createLocalJWKSet(doc as { keys: never[] });
+  jwksLoadedAt = Date.now();
+  console.log("[chatgpt-mcp] JWKS loaded", source);
+  return jwks;
+}
+
+async function loadJwks(force = false): Promise<JWTVerifyGetKey> {
+  if (!force && jwks && Date.now() - jwksLoadedAt < JWKS_TTL_MS) return jwks;
+
+  const inline = getJwksJson();
+  if (inline) {
+    try {
+      const fromEnv = jwksFromDocument(JSON.parse(inline), "AUTH_JWKS_JSON");
+      if (fromEnv) return fromEnv;
+    } catch (err: any) {
+      console.warn("[chatgpt-mcp] AUTH_JWKS_JSON parse failed", err?.message || err);
+    }
+  }
+
+  const urls = [
+    ...new Set(
+      [getJwksInternalUrl(), getJwksUrl(), `${getWebsiteUrl()}/chatgpt-oauth/.well-known/jwks.json`].filter(Boolean),
+    ),
+  ];
   for (const url of urls) {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
@@ -40,16 +67,14 @@ async function loadJwks(): Promise<JWTVerifyGetKey> {
           console.warn("[chatgpt-mcp] JWKS", res.status, url);
           continue;
         }
-        const doc = (await res.json()) as { keys?: unknown[] };
-        if (!doc?.keys?.length) continue;
-        jwks = createLocalJWKSet(doc as { keys: never[] });
-        console.log("[chatgpt-mcp] JWKS loaded", url);
-        return jwks;
+        const fromUrl = jwksFromDocument((await res.json()) as { keys?: unknown[] }, url);
+        if (fromUrl) return fromUrl;
       } catch (err: any) {
         console.warn("[chatgpt-mcp] JWKS fetch failed", url, err?.message || err);
       }
     }
   }
+  if (jwks) return jwks;
   throw new InvalidTokenError("cannot load Mawsool JWKS");
 }
 
@@ -109,29 +134,38 @@ async function emailFromUserinfo(token: string): Promise<string | null> {
   return null;
 }
 
-async function verifyJwt(token: string) {
+async function verifyWithKeyset(token: string, keyset: JWTVerifyGetKey) {
   const issuer = getAuthIssuer();
   const audiences = acceptedAudiences();
-  const keyset = await loadJwks();
   try {
     return await jwtVerify(token, keyset, {
       issuer: issuerCandidates(issuer),
       audience: audiences,
-      clockTolerance: 5,
+      clockTolerance: 120,
     });
   } catch (strictErr: any) {
+    const verified = await jwtVerify(token, keyset, {
+      issuer: issuerCandidates(issuer),
+      clockTolerance: 120,
+    });
+    const payload = verified.payload as Record<string, unknown>;
+    console.warn("[chatgpt-mcp] JWT accepted with unmatched aud", {
+      aud: payload.aud,
+      expected: audiences,
+      firstError: strictErr?.message,
+    });
+    return verified;
+  }
+}
+
+async function verifyJwt(token: string) {
+  try {
+    return await verifyWithKeyset(token, await loadJwks(false));
+  } catch (firstErr: any) {
+    jwks = null;
+    jwksLoadedAt = 0;
     try {
-      const verified = await jwtVerify(token, keyset, {
-        issuer: issuerCandidates(issuer),
-        clockTolerance: 5,
-      });
-      const payload = verified.payload as Record<string, unknown>;
-      console.warn("[chatgpt-mcp] JWT accepted with unmatched aud", {
-        aud: payload.aud,
-        expected: audiences,
-        firstError: strictErr?.message,
-      });
-      return verified;
+      return await verifyWithKeyset(token, await loadJwks(true));
     } catch (looseErr: any) {
       let decoded: Record<string, unknown> | null = null;
       try {
@@ -140,12 +174,12 @@ async function verifyJwt(token: string) {
         decoded = null;
       }
       console.error("[chatgpt-mcp] JWT verify failed", {
-        ...tokenPreview(looseErr?.message ? looseErr : strictErr),
+        ...tokenPreview(looseErr?.message ? looseErr : firstErr),
         aud: decoded?.aud,
         iss: decoded?.iss,
         keys: decoded ? Object.keys(decoded) : [],
       });
-      throw new InvalidTokenError(looseErr?.message || strictErr?.message || "invalid access token");
+      throw new InvalidTokenError(looseErr?.message || firstErr?.message || "invalid access token");
     }
   }
 }

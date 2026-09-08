@@ -41,6 +41,16 @@ export function getJwksUrl(): string {
   return `${issuer}/.well-known/jwks.json`;
 }
 
+/** Optional JWKS document JSON so Coolify does not have to hairpin-fetch backtest. */
+export function getJwksJson(): string {
+  return optional("AUTH_JWKS_JSON");
+}
+
+/** Optional private/internal JWKS URL, e.g. http://backend:8000/chatgpt-oauth/.well-known/jwks.json */
+export function getJwksInternalUrl(): string {
+  return optional("AUTH_JWKS_INTERNAL_URL");
+}
+
 export function getWebsiteUrl(): string {
   return optional("WEBSITE_URL", "http://localhost:5000").replace(/\/+$/, "");
 }

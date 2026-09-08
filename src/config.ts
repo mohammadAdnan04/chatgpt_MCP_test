@@ -72,30 +72,66 @@ export function getProtectedResourceDoc() {
 
 let cachedAsMetadata: Record<string, unknown> | null = null;
 
+function issuerKey(value: string): string {
+  return String(value || "").replace(/\/+$/, "");
+}
+
+function metadataFromIssuer(issuer: string): Record<string, unknown> {
+  const base = issuerKey(issuer);
+  const auth0 = /auth0\.com/i.test(base);
+  return {
+    issuer: base,
+    authorization_endpoint: `${base}/authorize`,
+    token_endpoint: auth0 ? `${base}/oauth/token` : `${base}/token`,
+    jwks_uri: `${base}/.well-known/jwks.json`,
+    response_types_supported: ["code"],
+    grant_types_supported: ["authorization_code", "refresh_token"],
+    code_challenge_methods_supported: ["S256"],
+    token_endpoint_auth_methods_supported: ["none", "private_key_jwt"],
+    scopes_supported: ["mcp", "offline_access", "openid", "email"],
+    client_id_metadata_document_supported: true,
+  };
+}
+
 async function fetchIdpMetadata(): Promise<Record<string, unknown> | null> {
   const issuer = getAuthIssuer();
-  const base = issuer.replace(/\/+$/, "");
+  const base = issuerKey(issuer);
+  let origin = base;
+  try {
+    origin = new URL(base).origin;
+  } catch {
+    // keep base
+  }
   const urls = [
     `${base}/.well-known/oauth-authorization-server`,
     `${base}/.well-known/openid-configuration`,
+    `${origin}/.well-known/oauth-authorization-server/chatgpt-oauth`,
+    `${origin}/.well-known/openid-configuration/chatgpt-oauth`,
   ];
   for (const url of urls) {
     try {
-      const res = await fetch(url, { headers: { accept: "application/json" } });
-      if (!res.ok) continue;
+      const res = await fetch(url, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) {
+        console.warn(`[chatgpt-mcp] OIDC ${res.status} ${url}`);
+        continue;
+      }
       const doc = (await res.json()) as Record<string, unknown>;
       if (doc && typeof doc.issuer === "string" && typeof doc.token_endpoint === "string") {
         return doc;
       }
-    } catch {
-      // try next
+    } catch (err: any) {
+      console.warn(`[chatgpt-mcp] OIDC fetch failed ${url}:`, err?.message || err);
     }
   }
   return null;
 }
 
 /**
- * Crash the process if Auth0 env is wrong. Coolify must not serve a half-configured MCP.
+ * Validate IdP env. If Coolify cannot hairpin-fetch backtest, do not crash — ChatGPT
+ * still discovers the AS from PRM using AUTH_ISSUER.
  */
 export async function assertChatgptMcpConfig(): Promise<void> {
   getServerUrl();
@@ -113,24 +149,24 @@ export async function assertChatgptMcpConfig(): Promise<void> {
     return;
   }
 
-  const meta = await fetchIdpMetadata();
-    if (!meta) {
-      throw new Error(
-        `FATAL: cannot fetch OIDC/OAuth metadata for AUTH_ISSUER=${issuer}. Set AUTH_ISSUER to the exact issuer from Auth0 .well-known/openid-configuration.`,
-      );
-    }
-    if (String(meta.issuer) !== issuer) {
-      throw new Error(
-        `FATAL: AUTH_ISSUER (${issuer}) !== IdP issuer (${meta.issuer}). Copy issuer character-for-character, including trailing slash.`,
-      );
-    }
-    if (String(meta.token_endpoint).includes("backbeta.mawsool.tech")) {
-      throw new Error("FATAL: IdP token_endpoint is backbeta. ChatGPT must use Auth0.");
-    }
-    cachedAsMetadata = meta;
-    console.log(
-      `[chatgpt-mcp] Auth0 live. issuer=${meta.issuer} token=${meta.token_endpoint} aud=${audience} resource=${resource}`,
+  const live = await fetchIdpMetadata();
+  if (live && issuerKey(String(live.issuer)) !== issuerKey(issuer)) {
+    throw new Error(
+      `FATAL: AUTH_ISSUER (${issuer}) !== IdP issuer (${live.issuer}). Copy issuer without extra slash.`,
     );
+  }
+  if (live && String(live.token_endpoint).includes("backbeta.mawsool.tech") && !String(live.token_endpoint).includes("chatgpt-oauth")) {
+    throw new Error("FATAL: IdP token_endpoint is Claude/backbeta /oauth/token.");
+  }
+  cachedAsMetadata = live || metadataFromIssuer(issuer);
+  if (!live) {
+    console.warn(
+      `[chatgpt-mcp] Could not fetch OIDC from AUTH_ISSUER=${issuer} (Coolify often cannot call its own public URL). Using built-in metadata. ChatGPT will still redirect to that issuer.`,
+    );
+  }
+  console.log(
+    `[chatgpt-mcp] IdP ready. issuer=${cachedAsMetadata.issuer} token=${cachedAsMetadata.token_endpoint} aud=${audience} resource=${resource}`,
+  );
 }
 
 /**
@@ -139,22 +175,7 @@ export async function assertChatgptMcpConfig(): Promise<void> {
  */
 export async function getAuthorizationServerMetadata(): Promise<Record<string, unknown>> {
   if (cachedAsMetadata) return cachedAsMetadata;
-  const issuer = getAuthIssuer();
-  const base = issuer.replace(/\/+$/, "");
   const live = await fetchIdpMetadata();
-  if (live) {
-    cachedAsMetadata = live;
-    return live;
-  }
-  cachedAsMetadata = {
-    issuer,
-    authorization_endpoint: `${base}/authorize`,
-    token_endpoint: `${base}/oauth/token`,
-    response_types_supported: ["code"],
-    grant_types_supported: ["authorization_code", "refresh_token"],
-    code_challenge_methods_supported: ["S256"],
-    token_endpoint_auth_methods_supported: ["none", "private_key_jwt"],
-    scopes_supported: ["mcp", "offline_access"],
-  };
+  cachedAsMetadata = live || metadataFromIssuer(getAuthIssuer());
   return cachedAsMetadata;
 }
